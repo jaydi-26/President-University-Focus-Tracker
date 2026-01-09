@@ -1,0 +1,194 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    overflow: hidden;
+}
+
+/* Main Container */
+.container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(to bottom, #f7f1de 23.077%, #8b887d 78.846%);
+}
+
+/* Content Area */
+.content-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 412px;
+    height: 917px;
+}
+
+/* Check on Students Button */
+.check-students-button {
+    position: absolute;
+    left: 50%;
+    top: 432px;
+    transform: translateX(-50%);
+    width: 312px;
+    height: 53px;
+    background: linear-gradient(to right, #435663 24.519%, #313647 83.654%);
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    box-shadow: inset 0px 0px 4px 0px black;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.check-students-button:hover {
+    transform: translateX(-50%) translateY(-2px);
+    box-shadow: inset 0px 0px 4px 0px black, 0px 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.check-students-button:active {
+    transform: translateX(-50%) translateY(0);
+}
+
+.button-text {
+    display: block;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: normal;
+    text-align: center;
+    color: white;
+}
+
+/* Footer Bar */
+.footer-bar {
+    position: absolute;
+    left: 0;
+    top: 866px;
+    width: 14420px;
+    height: 158px;
+}
+
+.footer-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* Back Arrow */
+.back-arrow {
+    position: absolute;
+    left: 60px;
+    top: 918px;
+    width: 86px;
+    height: 54px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    z-index: 10;
+}
+
+.back-arrow:hover {
+    transform: translateX(-5px);
+}
+
+.arrow-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* Footer Logo */
+.footer-logo {
+    position: absolute;
+    left: 662px;
+    top: 887px;
+    width: 116px;
+    height: 116px;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 1));
+    z-index: 10;
+}
+
+.logo-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 50%;
+    pointer-events: none;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 1440px) {
+    .container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .footer-bar {
+        width: 100%;
+    }
+
+    .check-students-button {
+        top: 40vh;
+    }
+
+    .footer-logo {
+        left: 50%;
+        transform: translateX(-50%);
+        top: auto;
+        bottom: 40px;
+    }
+
+    .back-arrow {
+        left: 40px;
+        top: auto;
+        bottom: 80px;
+    }
+
+    .footer-bar {
+        top: auto;
+        bottom: 0;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .check-students-button {
+        width: 90%;
+        max-width: 312px;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .check-students-button:hover {
+        transform: translate(-50%, calc(-50% - 2px));
+    }
+
+    .check-students-button:active {
+        transform: translate(-50%, -50%);
+    }
+
+    .button-text {
+        font-size: 20px;
+    }
+
+    .footer-bar {
+        height: 120px;
+    }
+
+    .footer-logo {
+        width: 80px;
+        height: 80px;
+        bottom: 20px;
+    }
+
+    .back-arrow {
+        width: 60px;
+        height: 40px;
+        left: 20px;
+        bottom: 50px;
+    }
+}
+

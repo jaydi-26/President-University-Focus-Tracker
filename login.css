@@ -1,0 +1,148 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Cabin', sans-serif;
+}
+
+/* BACKGROUND */
+.container {
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(89deg, rgb(67, 86, 99) 26%, rgb(49, 54, 71) 92%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* CENTERED GROUP */
+.login-wrapper {
+    position: relative;
+    width: 1200px;
+    height: 750px;
+}
+
+/* Login Card */
+.login-card {
+    position: absolute;
+    width: 544px;
+    height: 441px;
+    left: 0;
+    top: 180px;
+    border-radius: 30px;
+    background: linear-gradient(180deg, rgb(49,54,71) 10%, rgb(67,86,99) 83%);
+    box-shadow: 0 45px 50px rgba(0,0,0,0.25);
+}
+
+/* Decorative Circle */
+.decorative-circle {
+    position: absolute;
+    width: 612px;
+    height: 592px;
+    right: 0;
+    top: 120px;
+}
+
+/* Logo */
+.logo-container {
+    position: absolute;
+    top: 0;
+    right: 120px;
+    width: 120px;
+    height: 120px;
+}
+
+.logo-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Title */
+.login-title {
+    position: absolute;
+    left: 180px;
+    top: 165px;
+    font-family: 'Baloo Bhai', sans-serif;
+    font-size: 55px;
+    background: linear-gradient(180deg, #fff8d4, #ccc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Inputs */
+.input-container {
+    position: absolute;
+    width: 299px;
+    left: 60px;
+}
+
+.email-input { top: 310px; opacity: 0.6; }
+.password-input { top: 370px; }
+
+.input-label {
+    font-size: 19px;
+    color: white;
+}
+
+.line-separator {
+    margin-top: 10px;
+    width: 100%;
+    height: 1px;
+    background: black;
+}
+
+/* Button */
+.login-button-wrapper {
+    position: absolute;
+    top: 460px;
+    left: 80px;
+    width: 324px;
+    height: 37px;
+    border-radius: 35px;
+    background: linear-gradient(180deg, rgb(67,86,99), rgb(49,54,71));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-button {
+    font-family: 'Baloo Bhai', sans-serif;
+    font-size: 20px;
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+/* Links */
+.create-account-container {
+    position: absolute;
+    top: 520px;
+    left: 120px;
+}
+
+.forget-password-container {
+    position: absolute;
+    top: 520px;
+    left: 360px;
+}
+
+.create-account-link,
+.forget-password-link {
+    font-family: 'Baloo Bhai', sans-serif;
+    font-size: 11px;
+    color: #b0b0b0;
+    text-decoration: none;
+}
+
+.create-account-link:hover,
+.forget-password-link:hover {
+    text-decoration: underline;
+}

@@ -1,0 +1,314 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Main Container */
+.lobby-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(180deg, #f7f1de 23%, #8b887d 79%);
+}
+
+/* Wave Section */
+.wave-section {
+    position: absolute;
+    height: 917px;
+    left: 0;
+    top: 0;
+    width: 11440px;
+    overflow: hidden;
+}
+
+/* Wave Layers */
+.wave-bawah {
+    position: absolute;
+    inset: 11.23% 50.24% 83.1% 50.24%;
+}
+
+.wave-bawah-inner {
+    position: absolute;
+    inset: -0.39% -0.17% -3.49% -0.17%;
+}
+
+.wave-tenga {
+    position: absolute;
+    inset: -13.74% -50.24% 85.61% -50.24%;
+}
+
+.wave-atas {
+    position: absolute;
+    inset: -16.25% -50.24% 88.11% -50.24%;
+}
+
+.wave-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* Input Container */
+.input-container {
+    position: absolute;
+    background: linear-gradient(90deg, #ffffff 69.712%, #435663 100%);
+    height: 53px;
+    left: 522px;
+    border-radius: 5px;
+    top: 249px;
+    width: 395px;
+}
+
+.input-shadow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    box-shadow: inset 0px 0px 4px 0px black;
+    border-radius: 5px;
+}
+
+.class-code-input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 0 20px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    color: black;
+    border-radius: 5px;
+}
+
+.class-code-input::placeholder {
+    color: rgba(0, 0, 0, 0.3);
+}
+
+/* Form Title */
+.form-title {
+    position: absolute;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    line-height: normal;
+    left: 720px;
+    font-size: 24px;
+    text-align: center;
+    color: black;
+    top: 213px;
+    transform: translateX(-50%);
+    width: 274px;
+}
+
+/* Join Button Container */
+.join-button-container {
+    position: absolute;
+    height: 53px;
+    left: 569px;
+    overflow: hidden;
+    top: 360px;
+    width: 302px;
+    cursor: pointer;
+}
+
+.join-button-bg {
+    position: absolute;
+    background: linear-gradient(90deg, #435663 24.519%, #313647 83.654%);
+    height: 53px;
+    left: 2px;
+    border-radius: 5px;
+    top: 0;
+    width: 302px;
+    transition: transform 0.2s ease;
+}
+
+.join-button-container:hover .join-button-bg {
+    transform: translateY(-2px);
+}
+
+.join-button-container:active .join-button-bg {
+    transform: translateY(0);
+}
+
+.join-button-shadow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    box-shadow: inset 0px 0px 4px 0px black;
+    border-radius: 5px;
+}
+
+.join-button-text {
+    position: absolute;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    height: 26px;
+    line-height: normal;
+    left: 153px;
+    font-size: 24px;
+    text-align: center;
+    color: white;
+    top: 9px;
+    transform: translateX(-50%);
+    width: 302px;
+    pointer-events: none;
+}
+
+/* Logo */
+.logo-container {
+    position: absolute;
+    left: 662px;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    width: 116px;
+    height: 116px;
+    top: -7px;
+}
+
+.logo-image {
+    position: absolute;
+    inset: 0;
+    max-width: none;
+    object-fit: cover;
+    object-position: 50% 50%;
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+}
+
+/* Footer Bar */
+.footer-bar {
+    position: absolute;
+    background: linear-gradient(90deg, #435663 24.519%, #313647 83.654%);
+    height: 158px;
+    left: 0;
+    border-radius: 5px;
+    top: 866px;
+    width: 14040px;
+}
+
+/* Back Arrow */
+.back-arrow {
+    position: absolute;
+    height: 54px;
+    left: 55px;
+    top: 918px;
+    width: 86px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.back-arrow:hover {
+    transform: translateX(-5px);
+}
+
+.arrow-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 1440px) {
+    .wave-section {
+        width: 100%;
+    }
+    
+    .logo-container {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .form-title {
+        left: 50%;
+    }
+    
+    .input-container {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .join-button-container {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .footer-bar {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .wave-section {
+        height: auto;
+    }
+    
+    .logo-container {
+        width: 80px;
+        height: 80px;
+        top: 20px;
+    }
+    
+    .form-title {
+        top: 140px;
+        font-size: 20px;
+        width: 90%;
+    }
+    
+    .input-container {
+        width: 90%;
+        max-width: 350px;
+        top: 180px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .join-button-container {
+        width: 90%;
+        max-width: 280px;
+        top: 260px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .join-button-bg {
+        width: 100%;
+        left: 0;
+    }
+    
+    .footer-bar {
+        height: 100px;
+        top: auto;
+        bottom: 0;
+        width: 600px;
+    }
+    
+    .back-arrow {
+        width: 60px;
+        height: 38px;
+        left: 20px;
+        top: auto;
+        bottom: 31px;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-title {
+        font-size: 18px;
+    }
+    
+    .class-code-input {
+        font-size: 16px;
+    }
+    
+    .join-button-text {
+        font-size: 20px;
+    }
+}

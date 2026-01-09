@@ -1,0 +1,16 @@
+body {
+  background-color: #36576e; 
+  
+}
+
+.logo {
+  display: flex;
+  justify-content: center;  /* horizontal center */
+  align-items: center;      /* vertical center */
+  height: 100vh;
+}
+
+.logo img {
+  width: 800px;   /* 👈 make logo smaller */
+  height: auto;
+}

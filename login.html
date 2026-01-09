@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - PUFT</title>
+
+    <link rel="stylesheet" href="login.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai&family=Cabin:wght@400&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <!-- CENTERED WRAPPER -->
+        <div class="login-wrapper">
+
+            <!-- Login Card -->
+            <div class="login-card"></div>
+
+            <!-- Decorative Circle -->
+            <div class="decorative-circle">
+                <svg class="circle-svg" fill="none" preserveAspectRatio="none" viewBox="0 0 612.011 591.988">
+                    <ellipse cx="306.006" cy="295.994" rx="306.006" ry="295.994" fill="url(#paint0_linear)" />
+                    <defs>
+                        <linearGradient id="paint0_linear" x1="306" y1="0" x2="306" y2="753">
+                            <stop stop-color="#171F24"/>
+                            <stop offset="0.88" stop-color="#57758A"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+
+          
+
+            <!-- Login Title -->
+            <h1 class="login-title">Login</h1>
+
+            <!-- Email -->
+            <div class="input-container email-input">
+                <label class="input-label">Email</label>
+                <div class="line-separator"></div>
+            </div>
+
+            <!-- Password -->
+            <div class="input-container password-input">
+                <label class="input-label password-label">Password</label>
+                <div class="line-separator"></div>
+            </div>
+
+            <!-- Button -->
+            <div class="login-button-wrapper">
+                <button id="loginBtn" class="login-button">Login</button>
+            </div>
+
+            <!-- Links -->
+            <div class="create-account-container">
+                <a href="#" class="create-account-link">Create an account</a>
+            </div>
+
+            <div class="forget-password-container">
+                <a href="#" class="forget-password-link">Forget password?</a>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+  document.getElementById("loginBtn").addEventListener("click", function () {
+    window.location.href = "lobby.html"; // target page
+  });
+</script>
+
+    
+</body>
+</html>

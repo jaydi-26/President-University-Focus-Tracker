@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check on Students</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="cc button.css">
+</head>
+
+<body>
+<div class="container">
+
+    <div class="content-area"></div>
+
+    <button id="btnA" class="check-students-button">
+        <span class="button-text">Check on Students</span>
+    </button>
+
+    <!-- ⏱ TIMER DISPLAY -->
+    <div class="timer" id="timer"
+         style="margin-top:15px; color:linear-gradient(to right, #435663 24.519%, #313647 83.654%); font-family:Poppins; font-size:16px;">
+        Timer idle
+    </div>
+
+    <!-- 🔔 LOG OUTPUT -->
+    <div id="log"
+         style="margin-top:10px; color:linear-gradient(to right, #435663 24.519%, #313647 83.654%); font-family:Poppins; font-size:14px;">
+    </div>
+
+    <div class="footer-bar"></div>
+    <div class="back-arrow"></div>
+</div>
+
+<script>
+const ON_TIME = 10 * 1000;
+const OFF_TIME = 10 * 1000;
+const MAX_CYCLES = 3;
+
+let interval = null;
+let lastPressEvent = null;
+
+const timerEl = document.getElementById("timer");
+const logEl = document.getElementById("log");
+
+document.getElementById("btnA").addEventListener("click", startSequence);
+
+function startSequence() {
+    localStorage.setItem("seq_cycle", "1");
+    localStorage.setItem("seq_state", "on");
+    localStorage.setItem("seq_phase_start", Date.now());
+    localStorage.setItem("seq_pressed_in_cycle", "false");
+    localStorage.removeItem("seq_press_event");
+
+    logEl.innerHTML = "Sequence started<br>";
+
+    if (interval) clearInterval(interval);
+    interval = setInterval(runSequence, 250);
+}
+
+function runSequence() {
+    const state = localStorage.getItem("seq_state");
+    const cycle = Number(localStorage.getItem("seq_cycle"));
+    const start = Number(localStorage.getItem("seq_phase_start"));
+    const pressEvent = localStorage.getItem("seq_press_event");
+
+    if (!state || !cycle || !start) return;
+
+    // 🔔 Detect Room B press
+    if (pressEvent && pressEvent !== lastPressEvent) {
+        lastPressEvent = pressEvent;
+        localStorage.setItem("seq_pressed_in_cycle", "true");
+
+        localStorage.setItem("seq_state", "off");
+        localStorage.setItem("seq_phase_start", Date.now());
+
+        log(`Cycle ${cycle}: ✅ button pressed`);
+    }
+
+    const elapsed = Date.now() - start;
+    const phaseTime = state === "on" ? ON_TIME : OFF_TIME;
+    const remaining = Math.max(0, Math.ceil((phaseTime - elapsed) / 1000));
+
+    timerEl.textContent =
+        `Cycle ${cycle}/${MAX_CYCLES} — ${state.toUpperCase()} — ${remaining}s`;
+
+    if (state === "on" && elapsed >= ON_TIME) {
+        localStorage.setItem("seq_state", "off");
+        localStorage.setItem("seq_phase_start", Date.now());
+    }
+
+    if (state === "off" && elapsed >= OFF_TIME) {
+        if (localStorage.getItem("seq_pressed_in_cycle") === "false") {
+            log(`Cycle ${cycle}: ❌ NOT pressed`);
+        }
+
+        if (cycle >= MAX_CYCLES) {
+            clearInterval(interval);
+            localStorage.setItem("seq_state", "done");
+            timerEl.textContent = "Sequence finished";
+            log("Sequence finished");
+        } else {
+            localStorage.setItem("seq_cycle", cycle + 1);
+            localStorage.setItem("seq_state", "on");
+            localStorage.setItem("seq_phase_start", Date.now());
+            localStorage.setItem("seq_pressed_in_cycle", "false");
+        }
+    }
+}
+
+function log(msg) {
+    logEl.innerHTML += msg + "<br>";
+}
+
+
+</script>
+</body>
+</html>
