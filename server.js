@@ -150,9 +150,14 @@ app.post('/api/start-trial', async (req, res) => {
 });
 
 // ─── Start Server ────────────────────────────────────────────────────────────
-app.listen(PORT, () => {
-    console.log(`=================================`);
-    console.log(`🚀 Server running: http://localhost:${PORT}`);
-    console.log(`=================================`);
-    console.log('Press CTRL + C to stop.');
-});
+if (process.env.VERCEL !== '1') {
+    app.listen(PORT, () => {
+        console.log(`=================================`);
+        console.log(`🚀 Server running: http://localhost:${PORT}`);
+        console.log(`=================================`);
+        console.log('Press CTRL + C to stop.');
+    });
+}
+
+// Export the app for Vercel
+module.exports = app;
