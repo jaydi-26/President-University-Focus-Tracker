@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Role Selection - PUFT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #435663;
+            --dark-blue: #313647;
+            --accent-blue: #7faccc;
+            --accent-red: #A93737;
+            --bg-light: #f7f1de;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f7f1de 0%, #dcd7c5 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- FULL PAGE HOVER BACKGROUNDS --- */
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .bg-student { background: linear-gradient(135deg, #1f2b36 0%, #0d1117 100%); }
+        .bg-lecturer { background: linear-gradient(135deg, #3d1414 0%, #1a0808 100%); }
+
+        body.hover-student .bg-student { opacity: 1; }
+        body.hover-lecturer .bg-lecturer { opacity: 1; }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 40px 20px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .header-text {
+            margin-bottom: 60px;
+            transition: transform 0.5s ease;
+        }
+
+        .header-text h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            color: var(--dark-blue);
+            font-weight: 700;
+            transition: color 0.5s ease, transform 0.5s ease;
+        }
+
+        .header-text p {
+            color: #666;
+            font-size: 1.2rem;
+            margin-top: 15px;
+            transition: color 0.5s ease;
+        }
+
+        body.hover-student .header-text h1, body.hover-lecturer .header-text h1 { color: white; }
+        body.hover-student .header-text p, body.hover-lecturer .header-text p { color: rgba(255, 255, 255, 0.7); }
+
+        /* --- CARDS GRID --- */
+        .role-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+            width: 100%;
+            perspective: 1200px;
+        }
+
+        /* --- THE POPPING CARDS --- */
+        .role-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            padding: 60px 40px;
+            border-radius: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            transition: 
+                transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                background 0.5s ease, 
+                box-shadow 0.5s ease,
+                opacity 0.5s ease;
+            z-index: 1;
+            text-decoration: none;
+        }
+
+        /* The "Pop" Animation on Hover */
+        .role-card:hover {
+            transform: translateY(-25px) scale(1.08); /* Massive pop up and grow */
+            z-index: 100;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4);
+        }
+
+        .icon-box {
+            width: 100px;
+            height: 100px;
+            background: white;
+            border-radius: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 45px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.4s ease;
+        }
+
+        .role-card:hover .icon-box {
+            transform: scale(1.15) rotate(5deg); /* Icon pops even more */
+        }
+
+        .role-card h2 {
+            color: var(--dark-blue);
+            font-size: 2rem;
+            margin-bottom: 15px;
+            transition: color 0.4s ease;
+            
+        }
+
+        .role-card p {
+            color: #555;
+            transition: color 0.4s ease;
+           
+        }
+
+        /* --- STUDENT SPECIFIC POP --- */
+        .role-card.student:hover {
+            background: linear-gradient(145deg, rgba(127, 172, 204, 0.3), rgba(49, 54, 71, 0.6));
+            border-color: rgba(127, 172, 204, 0.5);
+        }
+        .role-card.student:hover .icon-box { background: var(--accent-blue); color: white; }
+        .role-card.student:hover h2, .role-card.student:hover p { color: white; }
+
+        /* --- LECTURER SPECIFIC POP --- */
+        .role-card.lecturer:hover {
+            background: linear-gradient(145deg, rgba(169, 55, 55, 0.3), rgba(80, 20, 20, 0.6));
+            border-color: rgba(169, 55, 55, 0.5);
+        }
+        .role-card.lecturer:hover .icon-box { background: var(--accent-red); color: white; }
+        .role-card.lecturer:hover h2, .role-card.lecturer:hover p { color: white; }
+
+        /* Dimming the sibling when one is popped */
+        body.hover-student .role-card.lecturer,
+        body.hover-lecturer .role-card.student {
+            opacity: 0.4;
+            transform: scale(0.9) translateY(10px);
+            filter: blur(2px);
+        }
+
+        /* --- MODAL FORM --- */
+        .input-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 15, 25, 0.8);
+            backdrop-filter: blur(15px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .input-modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .input-modal {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(25px) saturate(150%);
+            -webkit-backdrop-filter: blur(25px) saturate(150%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 28px 32px;
+            border-radius: 30px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+            transform: translateY(30px) scale(0.95);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+        }
+
+        .input-modal-overlay.active .input-modal {
+            transform: translateY(0) scale(1);
+        }
+
+        .input-modal h2 {
+            color: #ffffff;
+            margin-bottom: 16px;
+            font-size: 1.6rem;
+            text-align: center;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 12px;
+            text-align: left;
+        }
+
+        .input-group label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .input-group input {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 11px 14px;
+            border-radius: 12px;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(0, 0, 0, 0.3);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-submit {
+            background: var(--accent-blue);
+            color: #ffffff;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        /* --- THEME OVERRIDES --- */
+        .input-modal-overlay.theme-red {
+            background: rgba(35, 10, 10, 0.85);
+        }
+
+        .input-modal-overlay.theme-red .input-modal {
+            background: rgba(255, 255, 255, 0.05); /* Lighter contrast against deep red */
+        }
+
+        .input-modal.theme-red {
+            border-color: rgba(169, 55, 55, 0.3);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(169,55,55,0.2);
+        }
+
+        .input-modal.theme-red .input-group input:focus {
+            border-color: var(--accent-red);
+            box-shadow: 0 0 15px rgba(169, 55, 55, 0.4);
+        }
+
+        .input-modal.theme-red .btn-cancel:hover {
+            background: rgba(169, 55, 55, 0.15);
+            border-color: rgba(169, 55, 55, 0.3);
+            color: #ffffff;
+        }
+
+        .input-modal.theme-red .btn-submit {
+            background: var(--accent-red);
+        }
+        
+        .input-modal.theme-red .btn-submit:hover {
+            box-shadow: 0 5px 15px rgba(169, 55, 55, 0.4);
+        }
+
+        /* ─── MOBILE RESPONSIVE ─────────────────────────────────────────── */
+        @media (max-width: 768px) {
+            body {
+                overflow: auto;
+                justify-content: flex-start;
+                padding-top: 32px;
+                padding-bottom: 32px;
+            }
+
+            .container {
+                padding: 24px 16px;
+            }
+
+            .header-text {
+                margin-bottom: 32px;
+            }
+
+            .header-text p {
+                font-size: 1rem;
+            }
+
+            /* Single column cards on mobile */
+            .role-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .role-card {
+                padding: 40px 28px;
+                border-radius: 28px;
+            }
+
+            .role-card:hover {
+                transform: translateY(-10px) scale(1.03);
+            }
+
+            /* Don't dim siblings — it looks odd on mobile since they're stacked */
+            body.hover-student .role-card.lecturer,
+            body.hover-lecturer .role-card.student {
+                opacity: 1;
+                transform: none;
+                filter: none;
+            }
+
+            .icon-box {
+                width: 80px;
+                height: 80px;
+                font-size: 36px;
+                border-radius: 22px;
+                margin-bottom: 18px;
+            }
+
+            .role-card h2 {
+                font-size: 1.6rem;
+                margin-bottom: 10px;
+            }
+
+            /* Modal */
+            .input-modal {
+                padding: 22px 20px;
+                border-radius: 22px;
+            }
+
+            .input-modal h2 {
+                font-size: 1.3rem;
+            }
+
+            #batchMajorRow {
+                flex-direction: column !important;
+                gap: 0 !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .role-card {
+                padding: 30px 20px;
+            }
+
+            .role-card h2 {
+                font-size: 1.4rem;
+            }
+
+            .icon-box {
+                width: 68px;
+                height: 68px;
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-overlay bg-student"></div>
+    <div class="bg-overlay bg-lecturer"></div>
+
+    <!-- MODAL POPUP FOR DETAILS -->
+    <div id="infoModalOverlay" class="input-modal-overlay">
+        <div class="input-modal">
+            <h2 id="infoModalTitle">Complete Profile</h2>
+            
+            <div class="input-group">
+                <label id="label1">Student ID</label>
+                <input type="text" id="input1" placeholder="Enter ID" inputmode="numeric" pattern="[0-9]*">
+            </div>
+
+            <div id="batchMajorRow" style="display: flex; gap: 12px; overflow: hidden;">
+                <div class="input-group" style="flex: 1; min-width: 0;">
+                    <label id="label2">Batch</label>
+                    <input type="text" id="input2" placeholder="e.g. 2025">
+                </div>
+                <div class="input-group" style="flex: 2; min-width: 0;">
+                    <label id="label3">Major</label>
+                    <input type="text" id="input3" placeholder="e.g. Info System">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label id="label4">Faculty</label>
+                <input type="text" id="input4" placeholder="e.g. Computer Science">
+            </div>
+
+            <div class="modal-buttons">
+                <button class="modal-btn btn-cancel" id="btnCancel">Cancel</button>
+                <button class="modal-btn btn-submit" id="btnSubmit">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header-text">
+            <h1>Welcome to PUFT</h1>
+            <p>Are you a student or a lecturer?</p>
+        </div>
+
+       
+        <div class="role-grid">
+            <a href="lobby.html" class="role-card student" id="studentCard">
+                <div class="icon-box">🎓</div>
+                <h2>Student</h2>
+                <p>Access sessions, respond to your lecture, and have fun in class!</p>
+            </a>
+       
+
+            <a href="lobby lect.html" class="role-card lecturer" id="lecturerCard">
+                <div class="icon-box">👨‍🏫</div>
+                <h2>Lecturer</h2>
+                <p>Host sessions, track your students, and create interactive content!</p>
+            </a>
+        </div>
+    </div>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+      import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyCu4ZFec3lEByyL1sAvP0VLR-ghUh5osfM",
+        authDomain: "puft-database-33f12.firebaseapp.com",
+        projectId: "puft-database-33f12",
+        storageBucket: "puft-database-33f12.firebasestorage.app",
+        messagingSenderId: "1018103500164",
+        appId: "1:1018103500164:web:173938f4af0e0c0ab961d1",
+        measurementId: "G-P4BMY8N714"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      // DOM Elements
+      const body = document.body;
+      const studentCard = document.getElementById("studentCard");
+      const lecturerCard = document.getElementById("lecturerCard");
+
+      // Hover Logic
+      studentCard.addEventListener("mouseenter", () => body.classList.add("hover-student"));
+      studentCard.addEventListener("mouseleave", () => body.classList.remove("hover-student"));
+
+      lecturerCard.addEventListener("mouseenter", () => body.classList.add("hover-lecturer"));
+      lecturerCard.addEventListener("mouseleave", () => body.classList.remove("hover-lecturer"));
+
+      // Modal Logic
+      let pendingRole = null;
+      let pendingUrl = null;
+
+      const modalOverlay = document.getElementById("infoModalOverlay");
+      const title = document.getElementById("infoModalTitle");
+      const label1 = document.getElementById("label1");
+      const input1 = document.getElementById("input1");
+      const label2 = document.getElementById("label2");
+      const label3 = document.getElementById("label3");
+      const label4 = document.getElementById("label4");
+      const input2 = document.getElementById("input2");
+      const input3 = document.getElementById("input3");
+      const input4 = document.getElementById("input4");
+      const btnCancel = document.getElementById("btnCancel");
+      const btnSubmit = document.getElementById("btnSubmit");
+
+      function openModalForRole(roleName, url, e) {
+          e.preventDefault();
+          
+          const sessionData = sessionStorage.getItem("sessionUser");
+          if (!sessionData) {
+              alert("You must be logged in to pick a role!");
+              window.location.href = "login.html";
+              return;
+          }
+
+          pendingRole = roleName;
+          pendingUrl = url;
+
+          const modalWindow = document.querySelector(".input-modal");
+
+          // The container that holds both Batch and Major
+          const batchMajorRow = document.getElementById("batchMajorRow");
+
+          if (roleName === "Student") {
+              title.innerText = "Student Profile";
+              label1.innerText = "Student ID";
+              input1.placeholder = "Enter Student ID";
+              input1.setAttribute("inputmode", "numeric");
+              input1.setAttribute("pattern", "[0-9]*");
+              label2.innerText = "Batch";
+              input2.placeholder = "e.g. 2025";
+              label3.innerText = "Major";
+              input3.placeholder = "e.g. Information System";
+              label4.innerText = "Faculty";
+              input4.placeholder = "e.g. Computer Science";
+              batchMajorRow.style.display = "flex";
+              input3.parentElement.style.display = "flex"; // restore Major field for students
+              modalOverlay.classList.remove("theme-red");
+              modalWindow.classList.remove("theme-red");
+          } else {
+              title.innerText = "Lecturer Profile";
+              label1.innerText = "Employee ID";
+              input1.placeholder = "Enter Employee ID";
+              input1.removeAttribute("inputmode");
+              input1.removeAttribute("pattern");
+              // For lecturer: reuse label2/input2 as "Department", hide the Major column
+              label2.innerText = "Department";
+              input2.placeholder = "e.g. Information System";
+              batchMajorRow.style.display = "block"; // collapse to single field
+              input3.parentElement.style.display = "none";
+              label4.innerText = "Faculty";
+              input4.placeholder = "e.g. Computer Science";
+              modalOverlay.classList.add("theme-red");
+              modalWindow.classList.add("theme-red");
+          }
+
+          // Reset all input values
+          input1.value = "";
+          input2.value = "";
+          input3.value = "";
+          input4.value = "";
+
+          modalOverlay.style.display = "flex";
+          setTimeout(() => modalOverlay.classList.add("active"), 10);
+      }
+
+      function closeInputModal() {
+          modalOverlay.classList.remove("active");
+          setTimeout(() => modalOverlay.style.display = "none", 400);
+      }
+
+      btnCancel.addEventListener("click", closeInputModal);
+
+      // Handle Enter keypress for submission
+      window.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" && modalOverlay.classList.contains("active")) {
+              e.preventDefault();
+              btnSubmit.click();
+          }
+      });
+
+      // Only allow digits in Student ID field
+      input1.addEventListener("input", () => {
+          if (pendingRole === "Student") {
+              input1.value = input1.value.replace(/[^0-9]/g, "");
+          }
+      });
+
+      btnSubmit.addEventListener("click", async () => {
+          const val1 = input1.value.trim();
+          const val2 = input2.value.trim();
+          const val3 = pendingRole === "Student" ? input3.value.trim() : null;
+          const val4 = input4.value.trim();
+
+          if (!val1 || !val2 || (pendingRole === "Student" && !val3) || !val4) {
+              alert("You must fill out all information to proceed.");
+              return;
+          }
+
+          if (pendingRole === "Student" && !/^[0-9]+$/.test(val1)) {
+              alert("Student ID must contain numbers only.");
+              return;
+          }
+
+          const sessionData = sessionStorage.getItem("sessionUser");
+          const user = JSON.parse(sessionData);
+
+          let updateData = { role: pendingRole };
+          if (pendingRole === "Student") {
+              updateData.student_id = val1;
+              updateData.batch = val2;
+              updateData.major = val3;
+              updateData.faculty = val4;
+          } else {
+              updateData.employee_id = val1;
+              updateData.department = val2;
+              updateData.faculty = val4;
+          }
+
+          btnSubmit.innerText = "Saving...";
+          btnSubmit.disabled = true;
+
+          try {
+              const userRef = doc(db, "users", user.id);
+              await updateDoc(userRef, updateData);
+
+              Object.assign(user, updateData);
+              sessionStorage.setItem("sessionUser", JSON.stringify(user));
+
+              document.body.style.opacity = '0';
+              document.body.style.transition = 'opacity 0.4s ease';
+              setTimeout(() => { window.location.href = pendingUrl; }, 400);
+
+          } catch (error) {
+              console.error("Error updating role:", error);
+              alert("Failed to assign role: " + error.message);
+              btnSubmit.innerText = "Continue";
+              btnSubmit.disabled = false;
+          }
+      });
+
+      studentCard.addEventListener("click", (e) => openModalForRole("Student", "lobby.html", e));
+      lecturerCard.addEventListener("click", (e) => openModalForRole("Lecturer", "lobby lect.html", e));
+    </script>
+</body>
+</html>

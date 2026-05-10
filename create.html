@@ -3,133 +3,571 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Class Creation - PUFT</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="create.css">
+    <title>Create Class - PUFT Red</title>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@600&family=Cabin:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-red: #A93737; /* The Red from your back arrow/sign-up */
+            --accent-red: #ff4d4d;
+            --bg-dark: #1a0b0b; /* Deep dark red-tinted black */
+            --bg-accent: #2d1414;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--bg-dark);
+            font-family: 'Cabin', sans-serif;
+            color: white;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- THE RED ANIMATED ORBS --- */
+        .bg-animate {
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            background: radial-gradient(circle at center, var(--bg-accent) 0%, var(--bg-dark) 100%);
+            overflow: hidden;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.4;
+            mix-blend-mode: screen;
+        }
+
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: var(--primary-red);
+            top: -15%;
+            left: -10%;
+            animation: move-top 22s infinite alternate ease-in-out;
+        }
+
+        .orb-2 {
+            width: 700px;
+            height: 700px;
+            background: #632a2a;
+            bottom: -20%;
+            right: -10%;
+            animation: move-bottom 28s infinite alternate ease-in-out;
+        }
+
+        @keyframes move-top {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(20vw, 20vh) rotate(90deg); }
+        }
+
+        @keyframes move-bottom {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-15vw, -15vh) scale(1.2); }
+        }
+
+        /* --- BACK NAVIGATION --- */
+        .back-nav {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 14px;
+            transition: 0.3s;
+            z-index: 10;
+        }
+
+        .back-nav:hover { color: var(--accent-red); transform: translateX(-3px); }
+
+        /* --- RED GLASS CARD --- */
+        .create-card {
+            width: 90%;
+            max-width: 450px;
+            padding: 50px 45px;
+            background: var(--glass);
+            backdrop-filter: blur(35px);
+            -webkit-backdrop-filter: blur(35px);
+            border: 1px solid var(--glass-border);
+            border-radius: 35px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+            position: relative;
+            z-index: 5;
+            animation: cardAppear 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes cardAppear {
+            from { opacity: 0; transform: scale(0.9) translateY(30px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .title {
+            font-family: 'Baloo Bhai 2', cursive;
+            font-size: 34px;
+            text-align: center;
+            margin-bottom: 35px;
+            color: white;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        
+
+        /* --- FORM --- */
+        .input-group {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent-red);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            color: white;
+            font-family: 'Cabin', sans-serif;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            border-color: var(--primary-red);
+            background: rgba(255, 255, 255, 0.07);
+            box-shadow: 0 0 20px rgba(169, 55, 55, 0.3);
+        }
+
+        /* --- RED GRADIENT BUTTON --- */
+        .create-button {
+            width: 100%;
+            padding: 16px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(90deg, #822a2a, #A93737);
+            color: white;
+            font-family: 'Baloo Bhai 2', cursive;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
+
+        .create-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(169, 55, 55, 0.4);
+            background: linear-gradient(90deg, #A93737, #cf4444);
+        }
+
+        .student-deco {
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+
+        /* --- CUSTOM TOAST NOTIFICATION --- */
+        #toast-container {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            pointer-events: none;
+        }
+
+        .toast {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 16px 22px;
+            border-radius: 18px;
+            background: rgba(23, 31, 36, 0.85);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.04);
+            color: white;
+            font-family: 'Cabin', sans-serif;
+            font-size: 14px;
+            max-width: 360px;
+            min-width: 280px;
+            pointer-events: auto;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(-20px) scale(0.95);
+            transition: opacity 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .toast.hide {
+            opacity: 0;
+            transform: translateY(-16px) scale(0.95);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        .toast-icon {
+            flex-shrink: 0;
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toast-icon.error { background: rgba(231, 76, 60, 0.2); border: 1px solid rgba(231, 76, 60, 0.35); }
+        .toast-icon.warning { background: rgba(243, 156, 18, 0.2); border: 1px solid rgba(243, 156, 18, 0.35); }
+        .toast-icon.info { background: rgba(169, 55, 55, 0.2); border: 1px solid rgba(169, 55, 55, 0.35); }
+
+        .toast-body { flex: 1; }
+        .toast-title {
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            margin-bottom: 3px;
+        }
+        .toast-msg { font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.4; }
+
+        .toast-icon.error .toast-title { color: #ff7675; }
+        .toast-icon.warning .toast-title { color: #fdcb6e; }
+        .toast-icon.info .toast-title { color: var(--primary-red); }
+
+        .toast-left-bar {
+            width: 3px;
+            align-self: stretch;
+            border-radius: 99px;
+            flex-shrink: 0;
+        }
+        .toast.error-toast .toast-left-bar { background: #e74c3c; }
+        .toast.warning-toast .toast-left-bar { background: #f39c12; }
+        .toast.info-toast .toast-left-bar { background: var(--primary-red); }
+
+        /* ─── MOBILE RESPONSIVE ─────────────────────────────────────────── */
+        @media (max-width: 600px) {
+            body {
+                overflow: auto;
+                height: auto;
+                min-height: 100vh;
+                align-items: flex-start;
+                padding: 80px 0 32px;
+            }
+
+            .back-nav {
+                top: 20px;
+                left: 16px;
+            }
+
+            .create-card {
+                padding: 36px 22px;
+                border-radius: 24px;
+                margin: 0 auto;
+                width: calc(100% - 32px);
+            }
+
+            .title {
+                font-size: 26px;
+                margin-bottom: 24px;
+            }
+
+            #codeDisplay {
+                font-size: 30px !important;
+                letter-spacing: 5px !important;
+                padding: 14px !important;
+            }
+
+            .create-button {
+                font-size: 17px;
+                padding: 14px;
+            }
+
+            .input-field {
+                font-size: 14px;
+                padding: 12px 14px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="lobby-container">
-        <div class="content-wrapper">
-            <!-- Header Wave Background -->
-            <div class="header-wave-container">
-                <svg class="wave-svg" fill="none" preserveAspectRatio="none" viewBox="0 0 2886.99 258">
-                    <path d="M2886.99 0C2886.99 68.4259 2734.91 134.049 2464.2 182.434C2193.49 230.818 1826.33 258 1443.5 258C1060.66 258 693.498 230.818 422.79 182.434C152.082 134.049 5.7807e-05 68.4259 0 0H2886.99Z" fill="url(#paint0_header)" opacity="0.8" />
-                    <defs>
-                        <linearGradient gradientUnits="userSpaceOnUse" id="paint0_header" x1="0" x2="2886.99" y1="129" y2="129">
-                            <stop offset="0.307692" stop-color="#515E6B" />
-                            <stop offset="0.528846" stop-color="#3F4856" />
-                        </linearGradient>
-                    </defs>
-                </svg>
-            </div>
+    <div id="toast-container"></div>
 
-           
-
-            <!-- Background decorative waves at bottom -->
-            <div class="wave-container-bawah">
-                <svg class="wave-svg" fill="none" preserveAspectRatio="none" viewBox="0 0 2896.99 268">
-                    <g filter="url(#filter0_d_1_39)" id="BAWAH" opacity="0.6">
-                        <path d="M2891.99 1C2891.99 69.4259 2739.91 135.049 2469.2 183.434C2198.49 231.818 1831.33 259 1448.5 259C1065.66 259 698.498 231.818 427.79 183.434C157.082 135.049 5.00006 69.4259 5 1H2891.99Z" fill="url(#paint0_linear_1_39)" />
-                    </g>
-                    <defs>
-                        <filter colorInterpolationFilters="sRGB" filterUnits="userSpaceOnUse" height="268" id="filter0_d_1_39" width="2896.99" x="0" y="0">
-                            <feFlood floodOpacity="0" result="BackgroundImageFix" />
-                            <feColorMatrix in="SourceAlpha" result="hardAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
-                            <feOffset dy="4" />
-                            <feGaussianBlur stdDeviation="2.5" />
-                            <feComposite in2="hardAlpha" operator="out" />
-                            <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
-                            <feBlend in2="BackgroundImageFix" mode="normal" result="effect1_dropShadow_1_39" />
-                            <feBlend in="SourceGraphic" in2="effect1_dropShadow_1_39" mode="normal" result="shape" />
-                        </filter>
-                        <linearGradient gradientUnits="userSpaceOnUse" id="paint0_linear_1_39" x1="5" x2="2891.99" y1="130" y2="130">
-                            <stop offset="0.307692" stop-color="#435663" />
-                            <stop offset="0.528846" stop-color="#313647" />
-                        </linearGradient>
-                    </defs>
-                </svg>
-            </div>
-
-            <div class="wave-container-tenga">
-                <svg class="wave-svg" fill="none" preserveAspectRatio="none" viewBox="0 0 2886.99 258">
-                    <path d="M2886.99 0C2886.99 68.4259 2734.91 134.049 2464.2 182.434C2193.49 230.818 1826.33 258 1443.5 258C1060.66 258 693.498 230.818 422.79 182.434C152.082 134.049 5.7807e-05 68.4259 0 0H2886.99Z" fill="url(#paint0_linear_1_36)" id="TENGA" opacity="0.6" />
-                    <defs>
-                        <linearGradient gradientUnits="userSpaceOnUse" id="paint0_linear_1_36" x1="0" x2="2886.99" y1="129" y2="129">
-                            <stop offset="0.307692" stop-color="#435663" />
-                            <stop offset="0.528846" stop-color="#313647" />
-                        </linearGradient>
-                    </defs>
-                </svg>
-            </div>
-
-            <div class="wave-container-atas">
-                <svg class="wave-svg" fill="none" preserveAspectRatio="none" viewBox="0 0 2886.99 258">
-                    <path d="M2886.99 0C2886.99 68.4259 2734.91 134.049 2464.2 182.434C2193.49 230.818 1826.33 258 1443.5 258C1060.66 258 693.498 230.818 422.79 182.434C152.082 134.049 5.7807e-05 68.4259 0 0H2886.99Z" fill="url(#paint0_linear_1_33)" id="ATAS" opacity="0.45" />
-                    <defs>
-                        <linearGradient gradientUnits="userSpaceOnUse" id="paint0_linear_1_33" x1="0" x2="2886.99" y1="129" y2="129">
-                            <stop offset="0.307692" stop-color="#435663" />
-                            <stop offset="0.528846" stop-color="#313647" />
-                        </linearGradient>
-                    </defs>
-                </svg>
-            </div>
-
-            <!-- Class Name Input -->
-            <p class="label class-name-label">Class Name</p>
-            <div class="input-wrapper input-class-name">
-                <input type="text" class="input-field" placeholder="">
-            </div>
-
-            <!-- Class Code Input -->
-            <p class="label class-code-label">Class Code</p>
-            <div class="input-wrapper input-class-code">
-                <input type="text" class="input-field" placeholder="">
-            </div>
-
-            <!-- Create Button -->
-            <button class="create-button" id="createBtn">
-                <span class="create-button-text">CREATE</span>
-            </button>
-
-            <!-- Footer -->
-            <div class="footer"></div>
-
-            <!-- Back Arrow -->
-            <div class="back-arrow">
-                <svg class="arrow-svg" fill="none" preserveAspectRatio="none" viewBox="0 0 86 54">
-                    <g clip-path="url(#clip0_1_30)" id="Frame 23">
-                        <g filter="url(#filter0_d_1_30)" id="Arrow 1">
-                            <path d="M78.9817 30.5C80.9146 30.5101 82.4898 28.9513 82.5 27.0183C82.5101 25.0854 80.9513 23.5102 79.0183 23.5L79 27L78.9817 30.5ZM3.52205 24.13C2.14809 25.4897 2.13649 27.7057 3.49614 29.0797L25.6531 51.4698C27.0128 52.8438 29.2288 52.8554 30.6028 51.4957C31.9768 50.1361 31.9884 47.92 30.6287 46.5461L10.9336 26.6437L30.836 6.94863C32.2099 5.58897 32.2215 3.37292 30.8619 1.99895C29.5022 0.624979 27.2862 0.613379 25.9122 1.97304L3.52205 24.13ZM79 27L79.0183 23.5L6.00226 23.1179L5.98394 26.6178L5.96562 30.1178L78.9817 30.5L79 27Z" fill="#A93737" />
-                        </g>
-                    </g>
-                    <defs>
-                        <filter color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse" height="59.5471" id="filter0_d_1_30" width="88.0161" x="-1.51606" y="0.960834">
-                            <feFlood flood-opacity="0" result="BackgroundImageFix" />
-                            <feColorMatrix in="SourceAlpha" result="hardAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
-                            <feOffset dy="4" />
-                            <feGaussianBlur stdDeviation="2" />
-                            <feComposite in2="hardAlpha" operator="out" />
-                            <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
-                            <feBlend in2="BackgroundImageFix" mode="normal" result="effect1_dropShadow_1_30" />
-                            <feBlend in="SourceGraphic" in2="effect1_dropShadow_1_30" mode="normal" result="shape" />
-                        </filter>
-                        <clipPath id="clip0_1_30">
-                            <rect fill="white" height="54" width="86" />
-                        </clipPath>
-                    </defs>
-                </svg>
-            </div>
-        </div>
+    <div class="bg-animate">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
     </div>
 
-    <script>
-    document.getElementById("createBtn").addEventListener("click", function () {
-        window.location.href = "cc button.html"; 
-        // change to any page you want, e.g. class-room.html
-    });
-</script>
+    <a href="#" onclick="returnToLobby(event)" class="back-nav">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        Go Back
+    </a>
 
+    <script>
+        /* ---- TOAST NOTIFICATION SYSTEM ---- */
+        function showToast(type, title, message, duration = 4000) {
+            const container = document.getElementById('toast-container');
+
+            const icons = {
+                error: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+                warning: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f39c12" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+                info: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A93737" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`
+            };
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}-toast`;
+            toast.innerHTML = `
+                <div class="toast-left-bar"></div>
+                <div class="toast-icon ${type}">${icons[type] || icons.info}</div>
+                <div class="toast-body">
+                    <div class="toast-title" style="color: ${type === 'error' ? '#ff7675' : type === 'warning' ? '#fdcb6e' : 'var(--primary-red)'}">${title}</div>
+                    <div class="toast-msg">${message}</div>
+                </div>
+            `;
+
+            container.appendChild(toast);
+
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => toast.classList.add('show'));
+            });
+
+            const dismiss = () => {
+                toast.classList.add('hide');
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            };
+
+            toast.addEventListener('click', dismiss);
+            setTimeout(dismiss, duration);
+        }
+
+        function returnToLobby(e) {
+            e.preventDefault();
+            const sessionData = sessionStorage.getItem("sessionUser");
+            if (sessionData) {
+                try {
+                    const user = JSON.parse(sessionData);
+                    if (user && user.role) {
+                        if (user.role.toLowerCase() === "lecturer") {
+                            window.location.href = "lobby lect.html";
+                            return;
+                        } else if (user.role.toLowerCase() === "student") {
+                            window.location.href = "lobby.html";
+                            return;
+                        }
+                    }
+                } catch(err) {
+                    console.error("Error parsing user data: ", err);
+                }
+            }
+            window.location.href = "lobby.html";
+        }
+    </script>
+
+    <div class="create-card">
+        <div class="student-deco"></div>
+
+        <h1 class="title">Create Class</h1>
+        
+        <div class="input-group">
+            <label>Class Name</label>
+            <input type="text" class="input-field" placeholder="Enter class name...">
+        </div>
+
+       <div class="input-group" style="text-align: center;">
+    <label style="margin-bottom: 15px;">Your Class Code</label>
+    
+    <div id="codeDisplay" style="
+        background: rgba(0, 0, 0, 0.2);
+        border: 2px dashed var(--glass-border);
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 15px;
+        font-family: 'Baloo Bhai 2', cursive;
+        font-size: 42px;
+        letter-spacing: 8px;
+        color: var(--accent-red);
+        text-shadow: 0 0 15px rgba(255, 77, 77, 0.3);
+        min-height: 80px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: all 0.3s ease;
+    ">------</div>
+
+    <button type="button" id="btnGenerateCode" style="
+        background: transparent;
+        border: 1px solid var(--accent-red);
+        color: var(--accent-red);
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-family: 'Cabin', sans-serif;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    " onmouseover="this.style.background='rgba(255,77,77,0.1)'" onmouseout="this.style.background='transparent'">
+        Generate Class Code
+    </button>
+    
+    <input type="hidden" id="classCode" value="">
+</div>
+        <button class="create-button" id="createBtn">Launch Session</button>
+    </div>
+
+    <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-analytics.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js"; 
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCu4ZFec3lEByyL1sAvP0VLR-ghUh5osfM",
+  authDomain: "puft-database-33f12.firebaseapp.com",
+  projectId: "puft-database-33f12",
+  storageBucket: "puft-database-33f12.firebasestorage.app",
+  messagingSenderId: "1018103500164",
+  appId: "1:1018103500164:web:173938f4af0e0c0ab961d1",
+  measurementId: "G-P4BMY8N714"
+};
+
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const db = getFirestore(app); 
+
+const createBtn = document.getElementById("createBtn");
+const btnGenerateCode = document.getElementById("btnGenerateCode");
+const codeInput = document.getElementById("classCode");
+const codeDisplay = document.getElementById("codeDisplay");
+const nameInput = document.querySelector('input[placeholder="Enter class name..."]');
+
+function generateRandomCode() {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    let result = "";
+    for (let i = 0; i < 6; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    
+    codeDisplay.innerText = result;
+    codeInput.value = result;
+
+    codeDisplay.style.transform = "scale(1.05)";
+    codeDisplay.style.borderColor = "var(--accent-red)";
+    codeDisplay.style.color = "white";
+    
+    setTimeout(() => {
+        codeDisplay.style.transform = "scale(1)";
+        codeDisplay.style.borderColor = "var(--glass-border)";
+        codeDisplay.style.color = "var(--accent-red)";
+    }, 200);
+}
+
+btnGenerateCode.addEventListener("click", generateRandomCode);
+
+let isCreating = false;
+
+async function handleCreate() {
+    if (isCreating) return;
+
+    const codeValue = codeInput.value.trim();
+    const className = nameInput.value.trim();
+
+    if (!className) {
+        showToast('warning', 'Missing Information', 'Please enter a class name.');
+        return;
+    }
+
+    if (codeValue.length !== 6) {
+        showToast('warning', 'Invalid Code', 'Please generate a class code first.');
+        return;
+    }
+
+    isCreating = true;
+
+    createBtn.innerText = "Creating...";
+    createBtn.style.opacity = "0.8";
+    createBtn.style.pointerEvents = "none"; 
+
+    const sessionDataLocal = sessionStorage.getItem("sessionUser");
+    let lecturerName = "Unknown Lecturer";
+    if (sessionDataLocal) {
+        const user = JSON.parse(sessionDataLocal);
+        lecturerName = user.name || lecturerName;
+    }
+
+    try {
+        const sessionsRef = collection(db, "puft database", "session data", "sessions");
+        
+        const sessionData = {
+            lecture_name: lecturerName,
+            session_code: codeValue,            
+            is_active: true,                  
+            created_at: serverTimestamp(),    
+            class_name: className
+        };
+
+        const docRef = await addDoc(sessionsRef, sessionData);
+        console.log("Success! Session created with Auto-ID: ", docRef.id);
+        
+        localStorage.setItem("activeSessionId", docRef.id);
+        localStorage.setItem("activeSessionCode", codeValue);
+        localStorage.setItem("activeSessionName", className);
+        
+        window.location.href = "cc button.html"; 
+
+    } catch (error) {
+        console.error("Error creating the session: ", error);
+        showToast('error', 'Creation Error', "Failed to create session: " + error.message);
+        createBtn.innerText = "Launch Session";
+        createBtn.style.opacity = "1";
+        createBtn.style.pointerEvents = "auto";
+        isCreating = false;
+    }
+}
+
+createBtn.addEventListener("click", handleCreate);
+
+nameInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') handleCreate();
+});
+</script>
 </body>
 </html>

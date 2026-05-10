@@ -1,77 +1,844 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - PUFT</title>
-
-    <link rel="stylesheet" href="login.css">
+    <meta name="description" content="Log in to PUFT — President University Focus Tracker.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai&family=Cabin:wght@400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --teal: #3a7ca5;
+            --teal-glow: rgba(58, 124, 165, 0.3);
+            --bg: #0d1520;
+            --glass: rgba(255, 255, 255, 0.04);
+            --glass-b: rgba(255, 255, 255, 0.08);
+            --text: rgba(255, 255, 255, 0.85);
+            --text-dim: rgba(255, 255, 255, 0.35);
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+        }
+
+        body {
+            background: radial-gradient(circle at center, #1e2d3e 0%, #0d1520 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* ─── GLOSSY LIGHT BEAMS ─────────────────────────────────────────── */
+        .light-beams {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .beam {
+            position: absolute;
+            width: 320px;
+            height: 300%;
+            top: -100%;
+            background: linear-gradient(to right,
+                    transparent 0%,
+                    rgba(58, 124, 165, 0.22) 50%,
+                    transparent 100%);
+            transform: rotate(35deg);
+            filter: blur(55px);
+            opacity: 0;
+            animation: sweepBeam 10s infinite ease-in-out;
+        }
+
+        .beam-1 {
+            left: -25%;
+            animation-delay: 0s;
+        }
+
+        .beam-2 {
+            left: 35%;
+            animation-delay: 3.3s;
+        }
+
+        .beam-3 {
+            left: 85%;
+            animation-delay: 6.6s;
+        }
+
+        @keyframes sweepBeam {
+            0% {
+                transform: translateX(-80%) translateY(-20%) rotate(35deg);
+                opacity: 0;
+            }
+
+            30%,
+            70% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateX(80%) translateY(20%) rotate(35deg);
+                opacity: 0;
+            }
+        }
+
+        /* subtle deep glow pools */
+        .bg-glow {
+            position: absolute;
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+            width: 400px;
+            height: 400px;
+            background: var(--teal);
+            filter: blur(160px);
+            opacity: 0.07;
+        }
+
+        /* ─── LOGIN CARD ───────────────────────────────────────────────── */
+        .login-card {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 420px;
+            padding: 48px 40px;
+            margin: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 28px;
+            box-shadow:
+                0 30px 60px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.03),
+                inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            animation: cardIn 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        @keyframes cardIn {
+            from {
+                opacity: 0;
+                transform: scale(0.93) translateY(28px);
+                filter: blur(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+                filter: blur(0);
+            }
+        }
+
+        /* top highlight stripe */
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 15%;
+            right: 15%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            border-radius: 999px;
+        }
+
+        /* ─── BRAND HEADER ─────────────────────────────────────────────── */
+        .brand-header {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+
+        .brand-logo {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(13, 21, 32, 0.8);
+            padding: 10px;
+            object-fit: contain;
+            margin-bottom: 16px;
+            filter: drop-shadow(0 0 16px rgba(58, 124, 165, 0.35));
+            transition: transform 0.4s ease, filter 0.4s ease;
+        }
+
+        .brand-logo:hover {
+            transform: scale(1.06);
+            filter: drop-shadow(0 0 28px rgba(58, 124, 165, 0.6));
+        }
+
+        .brand-sub {
+            font-size: 10.5px;
+            font-weight: 600;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 4px;
+        }
+
+        .login-title {
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #fff 0%, #9ecae8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ─── INPUTS ───────────────────────────────────────────────────── */
+        .input-group {
+            position: relative;
+            margin-bottom: 28px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            color: white;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
+            caret-color: var(--teal);
+        }
+
+        .input-field::placeholder {
+            color: transparent;
+        }
+
+        .input-label {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dim);
+            font-size: 14px;
+            pointer-events: none;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .input-field:focus {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .input-field:focus,
+        .input-field:not(:placeholder-shown) {
+            border-color: var(--teal);
+            box-shadow: 0 0 0 3px rgba(58, 124, 165, 0.15), 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .input-field:focus~.input-label,
+        .input-field:not(:placeholder-shown)~.input-label {
+            top: 0;
+            transform: translateY(-50%);
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--teal);
+            padding: 0 6px;
+            background: #0f1e30;
+            border-radius: 4px;
+        }
+
+        /* autofill */
+        .input-field:-webkit-autofill,
+        .input-field:-webkit-autofill:hover,
+        .input-field:-webkit-autofill:focus {
+            -webkit-text-fill-color: white !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+
+        .input-field:-webkit-autofill~.input-label {
+            top: 0;
+            transform: translateY(-50%);
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--teal);
+            padding: 0 6px;
+            background: #0f1e30;
+            border-radius: 4px;
+        }
+
+        /* password toggle */
+        #passwordField {
+            padding-right: 46px;
+        }
+
+        .pw-toggle {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--text-dim);
+            transition: color 0.25s;
+            display: flex;
+            align-items: center;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .pw-toggle:hover {
+            color: var(--teal);
+        }
+
+        /* ─── BUTTON ───────────────────────────────────────────────────── */
+        .login-button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #2a6090 0%, var(--teal) 60%, #5aaccc 100%);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 24px rgba(58, 124, 165, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-button::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 32px rgba(58, 124, 165, 0.45);
+        }
+
+        .login-button:hover::after {
+            opacity: 1;
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        .login-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ─── FOOTER LINKS ─────────────────────────────────────────────── */
+        .footer-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .footer-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 12.5px;
+            transition: color 0.25s;
+        }
+
+        .footer-links a:hover {
+            color: var(--teal);
+        }
+
+        /* ─── TOAST ────────────────────────────────────────────────────── */
+        #toast-container {
+            position: fixed;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+            width: max-content;
+            max-width: calc(100vw - 32px);
+        }
+
+        .toast {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 18px;
+            border-radius: 14px;
+            border: 1px solid transparent;
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3);
+            min-width: 300px;
+            max-width: 420px;
+            pointer-events: all;
+            animation: toastIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .toast.hiding {
+            animation: toastOut 0.35s ease forwards;
+        }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.92)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1)
+            }
+        }
+
+        @keyframes toastOut {
+            from {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                max-height: 200px
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(-12px) scale(0.94);
+                max-height: 0;
+                padding-top: 0;
+                padding-bottom: 0;
+                margin: 0
+            }
+        }
+
+        .toast::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            border-radius: 0 0 14px 14px;
+            transform-origin: left;
+            animation: toastBar var(--toast-dur, 4s) linear forwards;
+        }
+
+        @keyframes toastBar {
+            from {
+                transform: scaleX(1)
+            }
+
+            to {
+                transform: scaleX(0)
+            }
+        }
+
+        .toast-error {
+            background: rgba(192, 57, 43, 0.12);
+            border-color: rgba(192, 57, 43, 0.25);
+            color: #f08080;
+        }
+
+        .toast-error::after {
+            background: rgba(192, 57, 43, 0.5);
+        }
+
+        .toast-success {
+            background: rgba(39, 174, 96, 0.12);
+            border-color: rgba(39, 174, 96, 0.25);
+            color: #7cdba0;
+        }
+
+        .toast-success::after {
+            background: rgba(39, 174, 96, 0.5);
+        }
+
+        .toast-icon {
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .toast-body {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 2px;
+            color: inherit;
+        }
+
+        .toast-message {
+            font-size: 12.5px;
+            color: inherit;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+
+        .toast-close {
+            flex-shrink: 0;
+            background: none;
+            border: none;
+            color: inherit;
+            opacity: 0.5;
+            cursor: pointer;
+            padding: 0;
+            font-size: 16px;
+            line-height: 1;
+            transition: opacity .2s;
+        }
+
+        .toast-close:hover {
+            opacity: 1;
+        }
+
+        /* ─── MOBILE RESPONSIVE ─────────────────────────────────────────── */
+        @media (max-width: 600px) {
+            html, body {
+                /* allow scrolling on very small screens so nothing gets clipped */
+                overflow: auto;
+                height: auto;
+                min-height: 100%;
+            }
+
+            body {
+                align-items: flex-start;
+                padding: 24px 0;
+            }
+
+            .login-card {
+                padding: 32px 20px;
+                margin: 12px;
+                border-radius: 20px;
+                width: calc(100% - 24px);
+            }
+
+            .brand-logo {
+                width: 70px;
+                height: 70px;
+            }
+
+            .brand-header {
+                margin-bottom: 24px;
+            }
+
+            .login-title {
+                font-size: 22px;
+            }
+
+            .brand-sub {
+                font-size: 9px;
+                letter-spacing: 3px;
+            }
+
+            .input-group {
+                margin-bottom: 20px;
+            }
+
+            .input-field {
+                font-size: 14px;
+                padding: 13px 14px;
+            }
+
+            .login-button {
+                padding: 14px;
+                font-size: 14px;
+            }
+
+            .footer-links a {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .login-card {
+                padding: 28px 16px;
+                border-radius: 16px;
+            }
+
+            .login-title {
+                font-size: 20px;
+            }
+
+            .brand-logo {
+                width: 60px;
+                height: 60px;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <div class="container">
-        <!-- CENTERED WRAPPER -->
-        <div class="login-wrapper">
 
-            <!-- Login Card -->
-            <div class="login-card"></div>
+    <!-- Glossy beam background -->
+    <div class="light-beams">
+        <div class="beam beam-1"></div>
+        <div class="beam beam-2"></div>
+        <div class="beam beam-3"></div>
+    </div>
+    <div class="bg-glow" style="top:-10%;left:-10%;"></div>
+    <div class="bg-glow" style="bottom:-10%;right:-10%;"></div>
 
-            <!-- Decorative Circle -->
-            <div class="decorative-circle">
-                <svg class="circle-svg" fill="none" preserveAspectRatio="none" viewBox="0 0 612.011 591.988">
-                    <ellipse cx="306.006" cy="295.994" rx="306.006" ry="295.994" fill="url(#paint0_linear)" />
-                    <defs>
-                        <linearGradient id="paint0_linear" x1="306" y1="0" x2="306" y2="753">
-                            <stop stop-color="#171F24"/>
-                            <stop offset="0.88" stop-color="#57758A"/>
-                        </linearGradient>
-                    </defs>
-                </svg>
-            </div>
+    <!-- Toast container -->
+    <div id="toast-container" role="alert" aria-live="assertive"></div>
 
-          
-
-            <!-- Login Title -->
-            <h1 class="login-title">Login</h1>
-
-            <!-- Email -->
-            <div class="input-container email-input">
-                <label class="input-label">Email</label>
-                <div class="line-separator"></div>
-            </div>
-
-            <!-- Password -->
-            <div class="input-container password-input">
-                <label class="input-label password-label">Password</label>
-                <div class="line-separator"></div>
-            </div>
-
-            <!-- Button -->
-            <div class="login-button-wrapper">
-                <button id="loginBtn" class="login-button">Login</button>
-            </div>
-
-            <!-- Links -->
-            <div class="create-account-container">
-                <a href="#" class="create-account-link">Create an account</a>
-            </div>
-
-            <div class="forget-password-container">
-                <a href="#" class="forget-password-link">Forget password?</a>
-            </div>
-
+    <!-- Login card -->
+    <div class="login-card">
+        <div class="brand-header">
+            <img src="puft.png" alt="PUFT" class="brand-logo">
+            <p class="brand-sub">President University</p>
+            <h1 class="login-title">Welcome</h1>
         </div>
+
+        <form id="loginForm" novalidate>
+            <div class="input-group">
+                <input type="email" id="email" class="input-field" placeholder=" " autocomplete="email" required>
+                <label class="input-label" for="email">Email address</label>
+            </div>
+
+            <div class="input-group">
+                <input type="password" id="passwordField" class="input-field" placeholder=" "
+                    autocomplete="current-password" required>
+                <label class="input-label" for="passwordField">Password</label>
+                <button type="button" class="pw-toggle" id="pwToggle" onclick="togglePassword()"
+                    aria-label="Toggle password visibility">
+                    <svg id="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                        <circle cx="12" cy="12" r="3" />
+                    </svg>
+                </button>
+            </div>
+
+            <button type="submit" class="login-button" id="loginBtn">Log In</button>
+
+            <div class="footer-links">
+                <a href="sign up.html">Create account</a>
+                <a href="forgotpw.html">Forgot password?</a>
+            </div>
+        </form>
     </div>
 
     <script>
-  document.getElementById("loginBtn").addEventListener("click", function () {
-    window.location.href = "lobby.html"; // target page
-  });
-</script>
+        function togglePassword() {
+            const field = document.getElementById('passwordField');
+            const icon = document.getElementById('eyeIcon');
+            const btn = document.getElementById('pwToggle');
+            const isHidden = field.type === 'password';
+            field.type = isHidden ? 'text' : 'password';
+            btn.style.color = isHidden ? 'var(--teal)' : '';
+            icon.innerHTML = isHidden
+                ? `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>`
+                : `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
+        }
 
-    
+        function showToast(type, title, message, duration = 4500) {
+            const container = document.getElementById('toast-container');
+            const icons = {
+                error: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+                success: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`
+            };
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.style.setProperty('--toast-dur', `${duration}ms`);
+            toast.innerHTML = `
+                <span class="toast-icon">${icons[type] || icons.error}</span>
+                <div class="toast-body">
+                    <div class="toast-title">${title}</div>
+                    ${message ? `<div class="toast-message">${message}</div>` : ''}
+                </div>
+                <button class="toast-close" aria-label="Dismiss">&times;</button>
+            `;
+            const dismiss = () => {
+                toast.classList.add('hiding');
+                toast.addEventListener('animationend', () => toast.remove(), { once: true });
+            };
+            toast.querySelector('.toast-close').addEventListener('click', dismiss);
+            container.appendChild(toast);
+            setTimeout(dismiss, duration);
+        }
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCu4ZFec3lEByyL1sAvP0VLR-ghUh5osfM",
+            authDomain: "puft-database-33f12.firebaseapp.com",
+            projectId: "puft-database-33f12",
+            storageBucket: "puft-database-33f12.firebasestorage.app",
+            messagingSenderId: "1018103500164",
+            appId: "1:1018103500164:web:173938f4af0e0c0ab961d1",
+            measurementId: "G-P4BMY8N714"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const loginForm = document.getElementById("loginForm");
+        const loginBtn = document.getElementById("loginBtn");
+
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("passwordField").value;
+
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = `<span class="btn-spinner"></span> Checking...`;
+
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                const userDocRef = doc(db, "users", user.uid);
+                const userDocSnap = await getDoc(userDocRef);
+
+                if (!userDocSnap.exists()) {
+                    showToast("error", "Login failed", "User profile not found. Please contact support.");
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = "Log In";
+                    return;
+                }
+
+                const userData = userDocSnap.data();
+
+                const sessionUser = {
+                    id: user.uid,
+                    name: userData.username || userData.name,
+                    email: userData.email,
+                    role: userData.role || null,
+                    employee_id: userData.employee_id || null,
+                    department: userData.department || null,
+                    faculty: userData.faculty || null,
+                    student_id: userData.student_id || null,
+                    batch: userData.batch || null,
+                    major: userData.major || null,
+                    batch_major: userData.batch_major || (userData.batch && userData.major ? `${userData.batch} — ${userData.major}` : null),
+                    is_premium: userData.is_premium === true
+                };
+
+                sessionStorage.setItem("sessionUser", JSON.stringify(sessionUser));
+
+                // Sync the database premium flag to the local runtime flag
+                // ── Check if a trial has expired ────────────────────────────
+                if (userData.is_trial === true && userData.trial_end) {
+                    const trialExpired = new Date() > new Date(userData.trial_end);
+                    if (trialExpired) {
+                        try {
+                            const { updateDoc } = await import("https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js");
+                            await updateDoc(doc(db, "users", user.uid), {
+                                is_premium: false,
+                                is_trial: false
+                            });
+                        } catch(e) { console.warn('Could not revoke trial:', e); }
+                        userData.is_premium = false;
+                        sessionUser.is_premium = false;
+                    }
+                }
+
+                // ── Check if a paid subscription has expired ──────────────
+                if (userData.is_trial !== true && userData.subscription_end) {
+                    const subExpired = new Date() > new Date(userData.subscription_end);
+                    if (subExpired) {
+                        try {
+                            const { updateDoc } = await import("https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js");
+                            await updateDoc(doc(db, "users", user.uid), {
+                                is_premium: false,
+                                subscription_end: null
+                            });
+                        } catch(e) { console.warn('Could not revoke subscription:', e); }
+                        userData.is_premium = false;
+                        sessionUser.is_premium = false;
+                    }
+                }
+
+                if (userData.is_premium === true) {
+                    localStorage.setItem("puft_premium", "true");
+                } else {
+                    localStorage.removeItem("puft_premium");
+                }
+
+                // First-time vs returning user detection
+                const returnKey = `puft_returning_${user.uid}`;
+                const isReturning = localStorage.getItem(returnKey);
+                const displayName = sessionUser.name || email;
+
+                if (isReturning) {
+                    showToast("success", `Welcome back, ${displayName}!`, "Signing you in…");
+                } else {
+                    localStorage.setItem(returnKey, "true");
+                    showToast("success", `Welcome, ${displayName}!`, "Your account is all set. Signing you in…");
+                }
+
+                setTimeout(() => {
+                    if (userData.role === "Student") window.location.href = "lobby.html";
+                    else if (userData.role === "Lecturer") window.location.href = "lobby lect.html";
+                    else window.location.href = "role.html";
+                }, 1200);
+
+            } catch (err) {
+                console.error("Login error:", err);
+                let title = "Login failed";
+                let message = "An unexpected error occurred.";
+                
+                if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
+                    message = "Incorrect email or password. Please try again.";
+                } else if (err.code === 'auth/too-many-requests') {
+                    message = "Account temporarily disabled due to many failed login attempts.";
+                } else if (err.message) {
+                    message = err.message;
+                }
+                
+                showToast("error", title, message);
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = "Log In";
+            }
+        });
+    </script>
 </body>
+
 </html>

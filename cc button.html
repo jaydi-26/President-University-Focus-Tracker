@@ -1,121 +1,1822 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Check on Students</title>
+    <title>Class Monitor - PUFT</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="cc button.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@600;800&family=Cabin:wght@400;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <!-- Midtrans Snap SDK (Sandbox) -->
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js"
+            data-client-key="taI7sAV7UASDDqxK"></script>
+
+    <style>
+        :root {
+            --primary-red: #A93737;
+            --accent-red: #ff4d4d;
+            --bg-dark: #1a0b0b;
+            --bg-accent: #2d1414;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%;
+            height: 100vh;
+            background-color: var(--bg-dark);
+            font-family: 'Cabin', sans-serif;
+            color: white;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- BACKGROUND --- */
+        .bg-animate {
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            background: radial-gradient(circle at center, var(--bg-accent) 0%, var(--bg-dark) 100%);
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.4;
+            mix-blend-mode: screen;
+            animation: drift 25s infinite alternate ease-in-out;
+        }
+
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: var(--primary-red);
+            top: -10%;
+            left: -10%;
+        }
+
+        .orb-2 {
+            width: 700px;
+            height: 700px;
+            background: #632a2a;
+            bottom: -10%;
+            right: -10%;
+        }
+
+        @keyframes drift {
+            from {
+                transform: translate(0, 0);
+            }
+
+            to {
+                transform: translate(15vw, 15vh);
+            }
+        }
+
+        /* --- SLIDER STRUCTURE --- */
+        .slider-container {
+            display: flex;
+            width: 300vw;
+            height: 100vh;
+            transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        .page {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* --- ARROWS --- */
+        .slide-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide-arrow svg {
+            width: 70px;
+            height: 70px;
+            filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
+        }
+
+        .slide-arrow:hover {
+            color: var(--accent-red);
+            transform: translateY(-50%) scale(1.15);
+        }
+
+        .arrow-right {
+            right: 30px;
+            animation: nudgeRight 2s infinite;
+        }
+
+        .arrow-left {
+            left: 30px;
+            animation: nudgeLeft 2s infinite;
+        }
+
+        @keyframes nudgeRight {
+
+            0%,
+            100% {
+                right: 30px;
+            }
+
+            50% {
+                right: 45px;
+            }
+        }
+
+        @keyframes nudgeLeft {
+
+            0%,
+            100% {
+                left: 30px;
+            }
+
+            50% {
+                left: 45px;
+            }
+        }
+
+        /* --- DASHBOARD CARD --- */
+        .dashboard-card {
+            width: 90%;
+            max-width: 500px;
+            padding: 40px;
+            background: var(--glass);
+            backdrop-filter: blur(35px);
+            border: 1px solid var(--glass-border);
+            border-radius: 35px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+            text-align: center;
+        }
+
+        .title {
+            font-family: 'Baloo Bhai 2', cursive;
+            font-weight: 800;
+            font-size: 36px;
+            margin-bottom: 30px;
+        }
+
+        /* --- CHAT HEADER SPECIFIC --- */
+        .chat-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            font-size: 28px !important;
+            margin-bottom: 15px !important;
+        }
+
+        .profile-icon {
+            width: 32px;
+            height: 32px;
+            color: var(--accent-red);
+            filter: drop-shadow(0 0 8px var(--primary-red));
+        }
+
+        /* --- BUTTONS --- */
+        .button-container {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            padding: 18px;
+            border: none;
+            border-radius: 18px;
+            font-family: 'Baloo Bhai 2', cursive;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .check-students-button {
+            flex: 2;
+            background: linear-gradient(90deg, #822a2a, #A93737);
+            color: white;
+            box-shadow: 0 8px 15px rgba(169, 55, 55, 0.2);
+        }
+
+        .check-students-button:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(90deg, #A93737, #cf4444);
+            box-shadow: 0 12px 25px rgba(169, 55, 55, 0.4);
+        }
+
+        /* --- EXIT NAV WITH GLOW --- */
+        .exit-nav {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-family: 'Baloo Bhai 2', cursive;
+            font-size: 18px;
+            z-index: 100;
+            background: var(--glass);
+            padding: 10px 24px;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .exit-nav:hover {
+            color: white;
+            background: rgba(169, 55, 55, 0.3);
+            border-color: var(--primary-red);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(169, 55, 55, 0.6);
+        }
+
+        /* --- PARTICIPANTS NAV --- */
+        .participants-btn {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-family: 'Baloo Bhai 2', cursive;
+            font-size: 18px;
+            z-index: 100;
+            background: var(--glass);
+            padding: 10px 24px;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .participants-btn:hover {
+            color: white;
+            background: rgba(169, 55, 55, 0.3);
+            border-color: var(--primary-red);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(169, 55, 55, 0.6);
+        }
+
+        /* --- GACHA MACHINE UPDATES --- */
+        .gacha-machine {
+            border: 3px solid var(--primary-red);
+            transition: all 0.5s ease;
+        }
+
+        .gacha-viewport {
+            background: #000;
+            height: 120px;
+            margin-bottom: 25px;
+            border-radius: 20px;
+            border: 4px solid #331111;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            box-shadow: inset 0 0 20px #000;
+        }
+
+        .gacha-reel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .gacha-number {
+            height: 120px;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Baloo Bhai 2', cursive;
+            font-size: 70px;
+            color: var(--accent-red);
+            text-shadow: 0 0 15px var(--primary-red);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* REFINED VIDEO POP EFFECT */
+        .winner-pop {
+            animation: bamPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.6) forwards;
+            color: rgb(221, 70, 70) !important;
+            z-index: 10;
+        }
+
+        @keyframes bamPop {
+            0% {
+                transform: scale(1);
+            }
+
+            45% {
+                transform: scale(1.65);
+                text-shadow: 0 0 35px, 0 0 55px var(--accent-red);
+            }
+
+            100% {
+                transform: scale(1.35);
+                text-shadow: 0 0 20px, 0 0 30px var(--primary-red);
+            }
+        }
+
+        /* GLOSSY PULL BUTTON */
+        .pull-button {
+            width: 100%;
+            background: linear-gradient(180deg, #A93737, #661a1a);
+            color: white;
+            border: 2px solid #ff4d4d;
+            border-bottom: 6px solid #4d0000;
+            border-radius: 20px;
+            letter-spacing: 3px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .pull-button::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 20%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.25);
+            transform: rotate(30deg);
+            transition: none;
+        }
+
+        .pull-button:hover::after {
+            left: 140%;
+            transition: all 0.6s ease-in-out;
+        }
+
+        .pull-button:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .pull-button:active {
+            transform: translateY(4px);
+            border-bottom-width: 2px;
+        }
+
+        /* --- CHATBOT --- */
+        .chat-card {
+            width: 95%;
+            max-width: 600px;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--glass);
+            backdrop-filter: blur(35px);
+            border: 1px solid var(--glass-border);
+            border-radius: 35px;
+            padding: 25px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .ai-placeholder {
+            margin: auto;
+            text-align: center;
+            opacity: 0.5;
+            animation: aiPulse 2s infinite ease-in-out;
+        }
+
+        @keyframes aiPulse {
+
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: scale(0.95);
+            }
+
+            50% {
+                opacity: 0.7;
+                transform: scale(1);
+            }
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .chat-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            font-family: 'Cabin', sans-serif;
+            outline: none;
+            font-size: 16px;
+        }
+
+        .send-btn {
+            background: var(--primary-red);
+            border: none;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .send-btn:hover {
+            background: var(--accent-red);
+            transform: scale(1.1);
+        }
+
+        .timer {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(169, 55, 55, 0.1);
+            border-radius: 15px;
+            color: var(--accent-red);
+            text-align: center;
+        }
+
+        /* --- REFINED SCROLLER STYLING --- */
+        #log {
+            height: 140px;
+            overflow-y: auto;
+            text-align: left;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Scroller Blend logic */
+        #log::-webkit-scrollbar,
+        .chat-messages::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        #log::-webkit-scrollbar-track,
+        .chat-messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        #log::-webkit-scrollbar-thumb,
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: var(--glass-border);
+            border-radius: 10px;
+        }
+
+        #log::-webkit-scrollbar-thumb:hover,
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-red);
+        }
+
+        /* --- INPUTS --- */
+        input[type=number] {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            outline: none;
+            -moz-appearance: textfield;
+        }
+
+        input[type=number]::-webkit-outer-spin-button,
+        input[type=number]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* --- SUBSCRIPTION/MODAL STYLES --- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            z-index: 4000;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: rgba(26, 11, 11, 0.95);
+            border: 2px solid var(--primary-red);
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            position: relative;
+            color: white;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: #fff;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .close-btn:hover {
+            color: var(--accent-red);
+            transform: scale(1.1);
+        }
+
+        .sub-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .sub-option {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            position: relative;
+        }
+
+        .sub-option:hover {
+            border-color: var(--primary-red);
+        }
+
+        .sub-option.selected {
+            border-color: var(--accent-red);
+            background: rgba(169, 55, 55, 0.2);
+            box-shadow: 0 10px 20px rgba(169, 55, 55, 0.2);
+            transform: scale(1.02);
+        }
+
+        .trial-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--accent-red);
+            color: white;
+            font-size: 10px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .bonus-text {
+            color: #ffb84d;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-left: 5px;
+        }
+
+        .sub-option h3 {
+            color: white;
+            font-size: 1.1rem;
+            font-family: 'Baloo Bhai 2';
+        }
+
+        .sub-option p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
+        }
+
+        .sub-option .price {
+            font-weight: 700;
+            color: var(--accent-red);
+            display: block;
+            margin-top: 5px;
+        }
+
+        .payment-form {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.2);
+            animation: reveal 0.3s ease;
+        }
+
+        @keyframes reveal {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .sub-option.selected .payment-form {
+            display: flex;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .input-group label {
+            font-size: 11px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+        }
+
+        .input-group input,
+        .input-group select {
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .input-group select option {
+            color: black;
+        }
+
+        .qr-placeholder {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            text-align: center;
+            border-radius: 15px;
+            margin: 10px 0;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .pay-now-btn {
+            background: var(--primary-red);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.3s;
+            font-family: 'Baloo Bhai 2';
+            font-size: 16px;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(169, 55, 55, 0.4);
+        }
+
+        .pay-now-btn:hover {
+            background: var(--accent-red);
+            transform: scale(1.02);
+        }
+
+        /* --- TOAST NOTIFICATION --- */
+        #toast-notif {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: rgba(22, 24, 32, 0.96);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.88);
+            padding: 14px 24px;
+            border-radius: 14px;
+            font-family: 'Baloo Bhai 2', cursive;
+            font-size: 15px;
+            font-weight: 600;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            backdrop-filter: blur(20px);
+        }
+
+        #toast-notif.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
 </head>
 
 <body>
-<div class="container">
 
-    <div class="content-area"></div>
+    <div class="bg-animate">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
 
-    <button id="btnA" class="check-students-button">
-        <span class="button-text">Check on Students</span>
+    <div id="toast-notif"></div>
+
+    <div id="subModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeSubModal()">&times;</button>
+            <h2 style="font-family: 'Baloo Bhai 2'; color: var(--accent-red); text-align: center;">Choose Plan</h2>
+            <p style="color: rgba(255,255,255,0.6); text-align: center; margin-top: 5px;">Unlock HARLOW right now!
+            </p>
+
+            <div class="sub-grid">
+                <div class="sub-option" id="monthlyOption">
+                    <span class="trial-badge">14 Days Trial</span>
+                    <h3>Premium Monthly</h3>
+                    <p>Full AI access</p>
+                    <span class="price">IDR 50.000 / month</span>
+
+                    <div class="payment-form">
+                        <div class="input-group">
+                            <label>Full Name</label>
+                            <input type="text" placeholder="Full Name">
+                        </div>
+                        <button class="pay-now-btn" onclick="startPremiumTrial(this)">Start Free Trial</button>
+                    </div>
+                </div>
+
+                <div class="sub-option" id="yearlyOption">
+                    <span class="trial-badge">14 Days Trial</span>
+                    <h3>Premium Yearly <span class="bonus-text">+2 Months Bonus!</span></h3>
+                    <p>Get 14 months for the price of 12.</p>
+                    <span class="price">IDR 500.000 / year</span>
+
+                    <div class="payment-form">
+                        <div class="input-group">
+                            <label>Full Name</label>
+                            <input type="text" placeholder="Full Name">
+                        </div>
+                        <button class="pay-now-btn" onclick="startPremiumTrial(this)">Start Free Trial</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="#" onclick="returnToLobby(event)" class="exit-nav">Exit to Lobby</a>
+
+
+    <button class="participants-btn" onclick="openParticipants()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            <path d="M19 21v-2a4 4 0 0 0-2-3"></path>
+        </svg>
+        View Participants
     </button>
 
-    <!-- ⏱ TIMER DISPLAY -->
-    <div class="timer" id="timer"
-         style="margin-top:15px; color:linear-gradient(to right, #435663 24.519%, #313647 83.654%); font-family:Poppins; font-size:16px;">
-        Timer idle
+    <div id="participants-modal"
+        style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 3000; opacity: 0; pointer-events: none; transition: opacity 0.3s; display: flex; justify-content: center; align-items: center;">
+        <div
+            style="background: rgba(26, 11, 11, 0.95); border: 2px solid var(--primary-red); padding: 30px; border-radius: 20px; width: 90%; max-width: 400px; box-shadow: 0 15px 40px rgba(0,0,0,0.5);">
+            <h2
+                style="font-family: 'Baloo Bhai 2'; color: var(--accent-red); margin-bottom: 20px; text-align: center; font-size: 28px;">
+                PARTICIPANTS</h2>
+
+            <div style="text-align: center; margin-bottom: 15px; font-size: 14px; color: rgba(255,255,255,0.6);">
+                Room Code: <span id="displayRoomCode"
+                    style="font-weight: 800; color: white; background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 5px;">---</span>
+            </div>
+
+            <div id="participantsList"
+                style="max-height: 250px; overflow-y: auto; text-align: left; font-size: 16px; color: white;">
+                Waiting for student data...
+            </div>
+            <button onclick="closeParticipants()"
+                style="margin-top: 20px; width: 100%; padding: 14px; background: var(--primary-red); color: white; border: none; border-radius: 12px; cursor: pointer; font-family: 'Baloo Bhai 2'; font-size: 18px; font-weight: bold; transition: 0.3s;">CLOSE</button>
+        </div>
     </div>
 
-    <!-- 🔔 LOG OUTPUT -->
-    <div id="log"
-         style="margin-top:10px; color:linear-gradient(to right, #435663 24.519%, #313647 83.654%); font-family:Poppins; font-size:14px;">
+    <div class="slider-container" id="mainSlider">
+
+        <section class="page">
+            <button class="slide-arrow arrow-right" onclick="slide(1)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M9 18l6-6-6-6" />
+                </svg>
+            </button>
+
+            <div class="dashboard-card">
+                <h1 class="title">Monitor</h1>
+                <div class="settings-row" style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <div style="flex: 1;">
+                        <label
+                            style="font-size: 12px; color: rgba(255,255,255,0.5); display: block; margin-bottom: 5px;">ON
+                            SECS</label>
+                        <input type="number" id="inputOn" value="10" min="1" style="width: 100%;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label
+                            style="font-size: 12px; color: rgba(255,255,255,0.5); display: block; margin-bottom: 5px;">OFF
+                            SECS</label>
+                        <input type="number" id="inputOff" value="10" min="1" style="width: 100%;">
+                    </div>
+                </div>
+                <div class="button-container">
+                    <button id="btnA" class="btn check-students-button">Check Students</button>
+                    <button id="btnReset" class="btn reset-button"
+                        style="flex: 1; background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255, 255, 255, 0.1);">Reset</button>
+                </div>
+                <div class="timer" id="timer">STATUS: IDLE</div>
+                <div id="log">System ready...<br></div>
+            </div>
+        </section>
+
+        <section class="page">
+            <button class="slide-arrow arrow-left" onclick="slide(0)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M15 18l-6-6 6-6" />
+                </svg>
+            </button>
+            <button class="slide-arrow arrow-right" onclick="slide(2)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M9 18l6-6-6-6" />
+                </svg>
+            </button>
+
+            <div class="dashboard-card gacha-machine">
+                <h1 class="title">P1CK IT!</h1>
+                <div class="gacha-viewport">
+                    <div id="gacha-reel" class="gacha-reel">
+                        <div class="gacha-number">?</div>
+                    </div>
+                </div>
+                <div class="gacha-controls">
+                    <button id="pull-btn" class="btn pull-button" onclick="rollGacha()">PULL</button>
+                </div>
+                <div id="gacha-log" class="timer" style="font-size: 14px; margin-top: 15px;">READY FOR INSERT</div>
+            </div>
+        </section>
+
+        <section class="page">
+            <button class="slide-arrow arrow-left" onclick="slide(1)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M15 18l-6-6 6-6" />
+                </svg>
+            </button>
+
+            <div class="chat-card" style="position: relative; overflow: hidden;">
+
+                <div id="premiumOverlay"
+                    style="position: absolute; inset: 0; background: rgba(26, 11, 11, 0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 35px; z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; border: 1px solid rgba(255, 77, 77, 0.2);">
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="var(--accent-red)"
+                        stroke-width="2" style="margin-bottom: 15px;">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    <h2 style="font-family: 'Baloo Bhai 2'; font-size: 28px; color: white; margin-bottom: 5px;">Premium
+                        Feature</h2>
+                    <p style="color: rgba(255,255,255,0.7); margin-bottom: 25px; width: 80%;">Upgrade your account to
+                        unlock the HARLOW AI assistant.</p>
+                    <button onclick="openSubModal()"
+                        style="padding: 12px 25px; border: none; border-radius: 12px; background: linear-gradient(90deg, #822a2a, #A93737); color: white; font-family: 'Baloo Bhai 2'; font-size: 16px; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(169,55,55,0.4);"
+                        onmouseover="this.style.transform='translateY(-2px)'"
+                        onmouseout="this.style.transform='translateY(0)'">View Plans Here</button>
+                </div>
+
+                <h1 class="title chat-header">
+                    <svg class="profile-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    HARLOW
+                </h1>
+
+                <div class="chat-messages" id="chatbox">
+                    <div class="ai-placeholder">
+                        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="var(--accent-red)"
+                            stroke-width="1.5" style="margin-bottom: 10px;">
+                            <path
+                                d="M12 8V2m0 0l-2 2m2-2l2 2M12 16v6m0 0l-2-2m2 2l2-2M8 12H2m0 0l2-2m-2 2l2 2M16 12h6m0 0l-2-2m2 2l-2 2" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                        <p style="font-family: 'Baloo Bhai 2';">INITIALIZING COGNITIVE CORE...</p>
+                        <p style="font-size: 12px; color: rgba(255,255,255,0.4);">Ask a question to start the session
+                        </p>
+                    </div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="file" id="pdfUpload" accept="application/pdf" style="display: none;">
+                    <button class="send-btn" onclick="document.getElementById('pdfUpload').click()"
+                        style="background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); margin-right: 5px;"
+                        title="Upload PDF Material">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                    </button>
+                    <input type="text" class="chat-input" placeholder="Type a message or drop PDF..." id="aiInput">
+                    <button class="send-btn" onclick="window.sendMessage()"><svg width="20" height="20"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+                        </svg></button>
+                </div>
+            </div>
+        </section>
     </div>
 
-    <div class="footer-bar"></div>
-    <div class="back-arrow"></div>
-</div>
-
-<script>
-const ON_TIME = 10 * 1000;
-const OFF_TIME = 10 * 1000;
-const MAX_CYCLES = 3;
-
-let interval = null;
-let lastPressEvent = null;
-
-const timerEl = document.getElementById("timer");
-const logEl = document.getElementById("log");
-
-document.getElementById("btnA").addEventListener("click", startSequence);
-
-function startSequence() {
-    localStorage.setItem("seq_cycle", "1");
-    localStorage.setItem("seq_state", "on");
-    localStorage.setItem("seq_phase_start", Date.now());
-    localStorage.setItem("seq_pressed_in_cycle", "false");
-    localStorage.removeItem("seq_press_event");
-
-    logEl.innerHTML = "Sequence started<br>";
-
-    if (interval) clearInterval(interval);
-    interval = setInterval(runSequence, 250);
-}
-
-function runSequence() {
-    const state = localStorage.getItem("seq_state");
-    const cycle = Number(localStorage.getItem("seq_cycle"));
-    const start = Number(localStorage.getItem("seq_phase_start"));
-    const pressEvent = localStorage.getItem("seq_press_event");
-
-    if (!state || !cycle || !start) return;
-
-    // 🔔 Detect Room B press
-    if (pressEvent && pressEvent !== lastPressEvent) {
-        lastPressEvent = pressEvent;
-        localStorage.setItem("seq_pressed_in_cycle", "true");
-
-        localStorage.setItem("seq_state", "off");
-        localStorage.setItem("seq_phase_start", Date.now());
-
-        log(`Cycle ${cycle}: ✅ button pressed`);
-    }
-
-    const elapsed = Date.now() - start;
-    const phaseTime = state === "on" ? ON_TIME : OFF_TIME;
-    const remaining = Math.max(0, Math.ceil((phaseTime - elapsed) / 1000));
-
-    timerEl.textContent =
-        `Cycle ${cycle}/${MAX_CYCLES} — ${state.toUpperCase()} — ${remaining}s`;
-
-    if (state === "on" && elapsed >= ON_TIME) {
-        localStorage.setItem("seq_state", "off");
-        localStorage.setItem("seq_phase_start", Date.now());
-    }
-
-    if (state === "off" && elapsed >= OFF_TIME) {
-        if (localStorage.getItem("seq_pressed_in_cycle") === "false") {
-            log(`Cycle ${cycle}: ❌ NOT pressed`);
+    <script>
+        // Logic for Sub Modal
+        function openSubModal() {
+            document.getElementById('subModal').classList.add('active');
+        }
+        function closeSubModal() {
+            document.getElementById('subModal').classList.remove('active');
         }
 
-        if (cycle >= MAX_CYCLES) {
-            clearInterval(interval);
-            localStorage.setItem("seq_state", "done");
-            timerEl.textContent = "Sequence finished";
-            log("Sequence finished");
-        } else {
-            localStorage.setItem("seq_cycle", cycle + 1);
-            localStorage.setItem("seq_state", "on");
+        document.getElementById('monthlyOption').onclick = function (e) {
+            if (!['INPUT', 'SELECT', 'OPTION', 'BUTTON', 'LABEL'].includes(e.target.tagName)) {
+                this.classList.toggle('selected');
+                document.getElementById('yearlyOption').classList.remove('selected');
+            }
+        };
+        document.getElementById('yearlyOption').onclick = function (e) {
+            if (!['INPUT', 'SELECT', 'OPTION', 'BUTTON', 'LABEL'].includes(e.target.tagName)) {
+                this.classList.toggle('selected');
+                document.getElementById('monthlyOption').classList.remove('selected');
+            }
+        };
+
+        // Premium Trial (Moved to module block for database access)
+
+        // Check Premium Status for AI Feature
+        document.addEventListener("DOMContentLoaded", () => {
+            const sendBtns = document.querySelectorAll('.chat-input-area .send-btn');
+            
+            if (localStorage.getItem('puft_premium') === 'true') {
+                document.getElementById('premiumOverlay').style.display = 'none';
+                document.getElementById('aiInput').disabled = false;
+                sendBtns.forEach(btn => btn.disabled = false);
+            } else {
+                document.getElementById('aiInput').disabled = true;
+                sendBtns.forEach(btn => btn.disabled = true);
+            }
+        });
+
+        function openParticipants() {
+            const modal = document.getElementById('participants-modal');
+            modal.style.opacity = '1';
+            modal.style.pointerEvents = 'auto';
+        }
+
+        function closeParticipants() {
+            const modal = document.getElementById('participants-modal');
+            modal.style.opacity = '0';
+            modal.style.pointerEvents = 'none';
+        }
+
+        let interval = null;
+
+        const timerEl = document.getElementById("timer");
+        const logEl = document.getElementById("log");
+        const inputOn = document.getElementById("inputOn");
+        const inputOff = document.getElementById("inputOff");
+
+        function slide(index) {
+            document.getElementById('mainSlider').style.transform = `translateX(-${index * 100}vw)`;
+        }
+
+        // --- UPDATED EVENT LISTENER: Advance cycle on response ---
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'seq_press_event') {
+                try {
+                    const data = JSON.parse(e.newValue);
+                    if (data && data.name) {
+                        const cycle = data.cycle || localStorage.getItem("seq_cycle") || "1";
+                        const respondedKey = "seq_responded_in_cycle_" + cycle;
+                        let responded = JSON.parse(localStorage.getItem(respondedKey) || "[]");
+                        
+                        if (!responded.includes(data.name)) {
+                            responded.push(data.name);
+                            localStorage.setItem(respondedKey, JSON.stringify(responded));
+                            logEl.innerHTML += `<strong style="color: #4da3ff;">SUCCESS: ${data.name} responded! (Cycle ${cycle})</strong><br>`;
+                            logEl.scrollTop = logEl.scrollHeight;
+                        }
+                    }
+                } catch(err) {
+                    console.error("Failed to parse seq_press_event", err);
+                }
+            }
+        });
+
+        // Monitor Sequence Logic
+        document.getElementById("btnA").addEventListener("click", startSequence);
+        document.getElementById("btnReset").addEventListener("click", resetSequence);
+
+        let toastTimer = null;
+        function showToast(msg) {
+            const toast = document.getElementById('toast-notif');
+            toast.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>${msg}`;
+            toast.classList.add('show');
+            if (toastTimer) clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function startSequence() {
+            const onVal = inputOn.value;
+            const offVal = inputOff.value;
+
+            if (!onVal || parseInt(onVal) === 0 || !offVal || parseInt(offVal) === 0) {
+                showToast('Please fill in the timer');
+                return;
+            }
+
+            const onMs = parseInt(onVal) * 1000;
+            const offMs = parseInt(offVal) * 1000;
+
+            // Set initial storage states
+            localStorage.setItem("seq_on_time", onMs);
+            localStorage.setItem("seq_off_time", offMs);
+            localStorage.setItem("seq_cycle", "1");
+            localStorage.setItem("seq_responded_in_cycle_1", "[]");
+            localStorage.setItem("seq_state", "on"); // Triggers student pop-up
             localStorage.setItem("seq_phase_start", Date.now());
-            localStorage.setItem("seq_pressed_in_cycle", "false");
+
+            logEl.innerHTML += "<strong>Sequence started (Cycle 1)</strong><br>";
+            logEl.scrollTop = logEl.scrollHeight;
+
+            if (interval) clearInterval(interval);
+            interval = setInterval(runSequence, 100);
         }
-    }
-}
 
-function log(msg) {
-    logEl.innerHTML += msg + "<br>";
-}
+        function runSequence() {
+            const state = localStorage.getItem("seq_state");
+            const cycle = Number(localStorage.getItem("seq_cycle"));
+            const start = Number(localStorage.getItem("seq_phase_start"));
+            const userOnTime = Number(localStorage.getItem("seq_on_time")) || 10000;
+            const userOffTime = Number(localStorage.getItem("seq_off_time")) || 10000;
+            const MAX_CYCLES = 3;
 
+            if (!state || state === "done") return;
 
-</script>
+            const elapsed = Date.now() - start;
+            const phaseTime = (state === "on") ? userOnTime : userOffTime;
+            const remainingMs = Math.max(0, phaseTime - elapsed);
+            const seconds = (remainingMs / 1000).toFixed(1);
+
+            timerEl.style.color = (state === "on") ? "var(--accent-red)" : "rgba(255,255,255,0.5)";
+            timerEl.innerHTML = `CYCLE ${cycle}/${MAX_CYCLES} — ${state.toUpperCase()}: ${seconds}s`;
+
+            // When the ON phase ends...
+            if (state === "on" && elapsed >= userOnTime) {
+                // Check which students did not respond
+                const responded = JSON.parse(localStorage.getItem("seq_responded_in_cycle_" + cycle) || "[]");
+                const allStudents = window.currentSessionStudents || [];
+                
+                // If there are no students, we just log a generic message or nothing
+                if (allStudents.length === 0) {
+                    if (responded.length === 0) {
+                        logEl.innerHTML += `<span style="color: #ff4d4d;">MISSED: No students responded (Cycle ${cycle})</span><br>`;
+                        logEl.scrollTop = logEl.scrollHeight;
+                    }
+                } else {
+                    let missedCount = 0;
+                    allStudents.forEach(s => {
+                        const name = typeof s === 'string' ? s : (s.name || "Unknown");
+                        // Exclude lecturer from the check
+                        if (typeof s === 'object' && s.role === 'Lecturer') return;
+                        
+                        if (!responded.includes(name)) {
+                            logEl.innerHTML += `<span style="color: #ff4d4d;">MISSED: ${name} did not respond (Cycle ${cycle})</span><br>`;
+                            logEl.scrollTop = logEl.scrollHeight;
+                            missedCount++;
+                        }
+                    });
+                    if (missedCount === 0 && responded.length > 0) {
+                        logEl.innerHTML += `<strong style="color: #00e676;">All students responded! (Cycle ${cycle})</strong><br>`;
+                        logEl.scrollTop = logEl.scrollHeight;
+                    }
+                }
+
+                localStorage.setItem("seq_state", "off");
+                localStorage.setItem("seq_phase_start", Date.now());
+            }
+
+            // When the OFF phase ends (and a new cycle begins)
+            if (state === "off" && elapsed >= userOffTime) {
+                if (cycle >= MAX_CYCLES) {
+                    clearInterval(interval);
+                    localStorage.setItem("seq_state", "done");
+                    timerEl.textContent = "FINISHED";
+                    logEl.innerHTML += "<strong>Session complete.</strong><br>";
+                    logEl.scrollTop = logEl.scrollHeight;
+                } else {
+                    localStorage.setItem("seq_cycle", cycle + 1);
+                    localStorage.setItem("seq_responded_in_cycle_" + (cycle + 1), "[]");
+                    localStorage.setItem("seq_state", "on"); // Re-triggers the popup
+                    localStorage.setItem("seq_phase_start", Date.now());
+
+                    logEl.innerHTML += `<strong>Cycle ${cycle + 1} started</strong><br>`;
+                    logEl.scrollTop = logEl.scrollHeight;
+                }
+            }
+        }
+
+        function resetSequence() {
+            if (interval) clearInterval(interval);
+            
+            // Clean up all sequence-related keys
+            const keysToRemove = ["seq_state", "seq_cycle", "seq_phase_start", "seq_on_time", "seq_off_time", "seq_press_event"];
+            keysToRemove.forEach(k => localStorage.removeItem(k));
+            
+            // Remove dynamic keys
+            Object.keys(localStorage).forEach(k => {
+                if (k.startsWith("seq_responded_in_cycle_") || k.startsWith("seq_pressed_in_cycle_")) {
+                    localStorage.removeItem(k);
+                }
+            });
+
+            timerEl.textContent = "STATUS: IDLE";
+            // Clears the notification log on reset
+            logEl.innerHTML = "System reset.<br>";
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        // Gacha Logic 
+        function rollGacha() {
+            const reel = document.getElementById('gacha-reel');
+            const log = document.getElementById('gacha-log');
+            const btn = document.getElementById('pull-btn');
+            if (btn.disabled) return;
+
+            btn.disabled = true;
+            log.innerHTML = "SEARCHING DATABASE...";
+
+            reel.style.transition = "none";
+            reel.style.transform = "translateY(0)";
+
+            let html = '';
+            const totalNumbers = 40;
+            for (let i = 0; i <= totalNumbers; i++) {
+                html += `<div class="gacha-number">${Math.floor(Math.random() * 40) + 1}</div>`;
+            }
+            reel.innerHTML = html;
+
+            setTimeout(() => {
+                reel.style.transition = "transform 3.2s cubic-bezier(0.1, 0, 0.1, 1)";
+                reel.style.transform = `translateY(-${totalNumbers * 120}px)`;
+            }, 50);
+
+            setTimeout(() => {
+                const winner = reel.lastElementChild;
+                winner.classList.add('winner-pop');
+
+                log.innerHTML = `MATCH FOUND: STUDENT ${winner.textContent}`;
+                btn.disabled = false;
+            }, 3250);
+        }
+
+        // Chat Logic — delegated to the real Gemini sendMessage defined in the module block below.
+        // The Enter key listener is also set up there.
+    </script>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-analytics.js";
+        import { getFirestore, collection, addDoc, serverTimestamp, doc, onSnapshot, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+
+        // ── HARLOW AI (Gemini 2.5 Flash) ──────────────────────────────────────
+        import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
+
+        const GEMINI_API_KEY = "AIzaSyC8eOfrG6F9mn8ZnMInF5M3X1uDytdJAHM";
+        const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+
+        let pdfContextText = "";
+        pdfjsLib.GlobalWorkerOptions.workerSrc =
+            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+        // PDF Upload Handler
+        document.getElementById('pdfUpload').addEventListener('change', async function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const chatbox = document.getElementById('chatbox');
+            chatbox.innerHTML += `<div style="align-self: center; background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 10px; color: yellow; font-size: 12px; margin-bottom: 10px;">Extracting text from: ${file.name}... ⏳</div>`;
+            chatbox.scrollTop = chatbox.scrollHeight;
+
+            const fileReader = new FileReader();
+            fileReader.onload = async function () {
+                try {
+                    const typedarray = new Uint8Array(this.result);
+                    const pdf = await pdfjsLib.getDocument(typedarray).promise;
+                    let text = "";
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        const page = await pdf.getPage(i);
+                        const textContent = await page.getTextContent();
+                        text += textContent.items.map(s => s.str).join(" ") + "\n";
+                    }
+                    pdfContextText = text;
+                    chatbox.innerHTML += `<div style="align-self: center; background: rgba(77, 163, 255, 0.2); padding: 5px 15px; border-radius: 10px; color: #4da3ff; font-size: 12px; margin-bottom: 10px;">✅ PDF successfully processed!</div>`;
+                    chatbox.scrollTop = chatbox.scrollHeight;
+                } catch (error) {
+                    chatbox.innerHTML += `<div style="align-self: center; color: red; font-size: 12px;">❌ Failed to read PDF.</div>`;
+                }
+            };
+            fileReader.readAsArrayBuffer(file);
+        });
+
+        // Real HARLOW sendMessage with auto-retry
+        window.sendMessage = async function () {
+            const input = document.getElementById('aiInput');
+            const chatbox = document.getElementById('chatbox');
+            const messageText = input.value.trim();
+
+            if (messageText === "") return;
+            document.querySelector('.ai-placeholder')?.remove();
+
+            const userMsg = document.createElement('div');
+            userMsg.style.cssText = "align-self: flex-end; background: var(--primary-red); padding: 12px 18px; border-radius: 20px 20px 0 20px; max-width: 80%; font-size: 14px; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);";
+            userMsg.textContent = messageText;
+            chatbox.appendChild(userMsg);
+
+            input.value = "";
+            chatbox.scrollTop = chatbox.scrollHeight;
+
+            const aiMsg = document.createElement('div');
+            aiMsg.style.cssText = "align-self: flex-start; background: rgba(255,255,255,0.1); padding: 12px 18px; border-radius: 20px 20px 20px 0; max-width: 80%; font-size: 14px; margin-bottom: 10px; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.05); color: white;";
+            aiMsg.innerHTML = "<strong>HARLOW:</strong> <em style='color: rgba(255,255,255,0.5)'>Analyzing data...</em>";
+            chatbox.appendChild(aiMsg);
+            chatbox.scrollTop = chatbox.scrollHeight;
+
+            try {
+                let finalPrompt = `You are a teaching assistant named HARLOW. Please answer in English. User's request: ${messageText}`;
+                if (pdfContextText !== "") {
+                    finalPrompt = `You are a teaching assistant named HARLOW. Please answer in English. Use the following reference document to answer questions or create exercises.\n\n---\nREFERENCE DOCUMENT:\n${pdfContextText}\n---\n\nUser Request: ${messageText}`;
+                }
+
+                let success = false;
+                let attempt = 0;
+                const maxAttempts = 3;
+                let text = "";
+
+                while (attempt < maxAttempts && !success) {
+                    try {
+                        attempt++;
+                        if (attempt > 1) {
+                            aiMsg.innerHTML = `<strong>HARLOW:</strong> <em style='color: yellow'>Server busy. Attempting to reconnect (Attempt ${attempt}/${maxAttempts})...</em>`;
+                            chatbox.scrollTop = chatbox.scrollHeight;
+                        }
+                        const result = await model.generateContent(finalPrompt);
+                        text = (await result.response).text();
+                        success = true;
+                    } catch (err) {
+                        if (err.message.includes("503") || err.message.includes("high demand") || err.message.includes("500")) {
+                            if (attempt >= maxAttempts) throw err;
+                            await new Promise(resolve => setTimeout(resolve, 3000));
+                        } else {
+                            throw err;
+                        }
+                    }
+                }
+
+                text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+                aiMsg.innerHTML = `<strong>HARLOW:</strong><br><br>${text}`;
+
+                // Add "send to students" option
+                const promptContainer = document.createElement('div');
+                promptContainer.style.cssText = "margin-top: 15px; font-size: 13px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 10px; display: flex; align-items: center; justify-content: space-between;";
+                
+                const promptText = document.createElement('span');
+                promptText.textContent = "Would you like this question to be sent to your students?";
+                promptText.style.color = "rgba(255, 255, 255, 0.7)";
+                
+                const yesBtn = document.createElement('button');
+                yesBtn.textContent = "Yes";
+                yesBtn.style.cssText = "background: rgba(77, 163, 255, 0.2); border: 1px solid #4da3ff; color: #4da3ff; padding: 4px 12px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: bold; transition: all 0.3s;";
+                
+                yesBtn.onclick = async () => {
+                    if (yesBtn.disabled) return;
+                    yesBtn.disabled = true;
+                    yesBtn.textContent = "Sending...";
+                    yesBtn.style.opacity = "0.7";
+                    
+                    const activeSessionId = localStorage.getItem("activeSessionId");
+                    const payload = Date.now() + "|||" + text;
+                    if (activeSessionId) {
+                        try {
+                            const sessionRef = doc(db, "puft database", "session data", "sessions", activeSessionId);
+                            await updateDoc(sessionRef, {
+                                harlow_live_question: payload
+                            });
+                        } catch (e) {
+                            console.error("Error sending to Firestore:", e);
+                        }
+                    }
+                    localStorage.setItem("harlow_live_question", payload);
+                    yesBtn.textContent = "Sent!";
+                    yesBtn.style.background = "#28a745";
+                    yesBtn.style.borderColor = "#28a745";
+                    yesBtn.style.color = "white";
+                    yesBtn.disabled = true;
+                };
+
+                promptContainer.appendChild(promptText);
+                promptContainer.appendChild(yesBtn);
+                aiMsg.appendChild(promptContainer);
+
+            } catch (error) {
+                console.error("Gemini Error:", error);
+                if (error.message && (error.message.includes("503") || error.message.includes("high demand"))) {
+                    aiMsg.innerHTML = `<strong>HARLOW:</strong> <em style='color: var(--accent-red)'>System Error: Central server is currently full. Please wait a moment and type your question again.</em>`;
+                } else {
+                    aiMsg.innerHTML = `<strong>HARLOW:</strong> <em style='color: var(--accent-red)'>System Error: Connection to core failed.</em>`;
+                }
+            }
+            chatbox.scrollTop = chatbox.scrollHeight;
+        };
+
+        // Enter key to send
+        document.getElementById('aiInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') window.sendMessage();
+        });
+        // ── END HARLOW AI ──────────────────────────────────────────────────────
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCu4ZFec3lEByyL1sAvP0VLR-ghUh5osfM",
+            authDomain: "puft-database-33f12.firebaseapp.com",
+            projectId: "puft-database-33f12",
+            storageBucket: "puft-database-33f12.firebasestorage.app",
+            messagingSenderId: "1018103500164",
+            appId: "1:1018103500164:web:173938f4af0e0c0ab961d1",
+            measurementId: "G-P4BMY8N714"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getFirestore(app);
+
+        console.log("Firebase app initialized:", app);
+        console.log("Firestore initialized:", db);
+
+        // Premium Registration Engine — Midtrans Snap
+        window.startPremiumTrial = async (callerBtn) => {
+            // ── Find which plan's form this button belongs to ──────────────
+            const option = callerBtn ? callerBtn.closest('.sub-option') : null;
+            const plan = option && option.id === 'yearlyOption' ? 'yearly' : 'monthly';
+
+            // ── Collect field values from the active form ──────────────────
+            let nameVal = '';
+            if (option) {
+                const inputs = option.querySelectorAll('.payment-form input');
+                nameVal = inputs[0] ? inputs[0].value.trim() : '';
+            }
+
+            // ── Validation ─────────────────────────────────────────────────
+            if (!nameVal) {
+                showToast('Please fill in your Full Name before continuing.');
+                return;
+            }
+
+            // ── Get user info from session ───────────────────────────────
+            const sessionRaw = sessionStorage.getItem("sessionUser");
+            const user = sessionRaw ? JSON.parse(sessionRaw) : {};
+
+            const btn = option ? option.querySelector('.pay-now-btn') : null;
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = 'Loading…';
+            }
+
+            try {
+                // ── Try to start a free trial first ─────────────────────────
+                const trialRes = await fetch('http://localhost:3001/api/start-trial', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: user.id || 'guest', plan })
+                });
+                const trialData = await trialRes.json();
+
+                if (trialRes.ok && trialData.success) {
+                    // ── Trial activated — unlock HARLOW immediately, no payment ──
+                    user.is_premium = true;
+                    user.is_trial   = true;
+                    sessionStorage.setItem("sessionUser", JSON.stringify(user));
+                    localStorage.setItem('puft_premium', 'true');
+
+                    closeSubModal();
+                    const overlay = document.getElementById('premiumOverlay');
+                    if (overlay) {
+                        overlay.style.opacity = '0';
+                        setTimeout(() => overlay.style.display = 'none', 500);
+                    }
+                    const aiInput = document.getElementById('aiInput');
+                    if (aiInput) aiInput.disabled = false;
+                    const sendBtns = document.querySelectorAll('.chat-input-area .send-btn');
+                    sendBtns.forEach(b => b.disabled = false);
+
+                    const trialEndDate = new Date(trialData.trial_end).toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
+                    showToast(`🎉 14-Day Trial Started! HARLOW is unlocked until ${trialEndDate}.`);
+                    return;
+                }
+
+                // ── Only proceed to payment if trial was already used (403) ──
+                if (trialRes.status !== 403) {
+                    throw new Error(trialData.error || 'Could not start trial. Please try again.');
+                }
+
+                // ── Trial already used — proceed to real payment ─────────────
+                const response = await fetch('http://localhost:3001/api/create-transaction', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId:    user.id    || 'guest',
+                        userName:  nameVal,
+                        userEmail: user.email || '',
+                        plan
+                    })
+                });
+
+                const data = await response.json();
+                if (!response.ok || !data.token) throw new Error(data.error || 'No token received.');
+
+                if (btn) {
+                    btn.textContent = 'Subscribe Now';
+                    btn.disabled = false;
+                }
+
+                // ── Open the Midtrans Snap payment popup ─────────────────
+                window.snap.pay(data.token, {
+                    onSuccess: async (result) => {
+                        console.log('Payment success:', result);
+                        try {
+                            const { initializeApp } = await import("https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js");
+                            const { getFirestore, doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js");
+                            const fbApp = initializeApp({ apiKey:"AIzaSyCu4ZFec3lEByyL1sAvP0VLR-ghUh5osfM", authDomain:"puft-database-33f12.firebaseapp.com", projectId:"puft-database-33f12", storageBucket:"puft-database-33f12.firebasestorage.app", messagingSenderId:"1018103500164", appId:"1:1018103500164:web:173938f4af0e0c0ab961d1" }, 'snap-update');
+                            const db = getFirestore(fbApp);
+                            if (user.id) {
+                                const subStart = new Date();
+                                const subEnd = new Date(subStart);
+                                if (plan === 'yearly') {
+                                    subEnd.setFullYear(subEnd.getFullYear() + 1);
+                                } else {
+                                    subEnd.setDate(subEnd.getDate() + 30);
+                                }
+                                await updateDoc(doc(db, "users", user.id), {
+                                    is_premium: true,
+                                    is_trial: false,
+                                    subscription_plan: plan,
+                                    subscription_started: subStart.toISOString(),
+                                    subscription_end: subEnd.toISOString()
+                                });
+                            }
+                        } catch(e) { console.warn('Firestore update failed:', e); }
+
+                        user.is_premium = true;
+                        sessionStorage.setItem("sessionUser", JSON.stringify(user));
+                        localStorage.setItem('puft_premium', 'true');
+
+                        closeSubModal();
+                        const overlay = document.getElementById('premiumOverlay');
+                        if(overlay) {
+                            overlay.style.opacity = '0';
+                            setTimeout(() => overlay.style.display = 'none', 500);
+                        }
+                        const aiInput = document.getElementById('aiInput');
+                        if(aiInput) aiInput.disabled = false;
+                        const sendBtns = document.querySelectorAll('.chat-input-area .send-btn');
+                        sendBtns.forEach(b => b.disabled = false);
+
+                        showToast('Premium Activated! 🎉 HARLOW is unlocked.');
+                    },
+                    onPending: (result) => {
+                        showToast('Payment Pending - Complete your payment to unlock HARLOW.');
+                    },
+                    onError: (result) => {
+                        showToast('Payment Failed - Please Try Again.');
+                    },
+                    onClose: () => {
+                        showToast('Payment Cancelled');
+                    }
+                });
+
+            } catch (err) {
+                console.error('Transaction error:', err);
+                showToast('Connection Error. Could not reach the payment server.');
+                if (btn) {
+                    btn.textContent = 'Start Free Trial';
+                    btn.disabled = false;
+                }
+            }
+        };
+
+        // ==========================================
+        // 1. Function to generate the 6-character code
+        // ==========================================
+        function generateSessionCode() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            let code = '';
+            for (let i = 0; i < 6; i++) {
+                // Randomly pick a character from the 'chars' string
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return code;
+        }
+
+        // ==========================================
+        // 2. Function to create a dynamic session
+        // ==========================================
+        async function startNewSession(lecturerName, room) {
+            try {
+                // This targets your specific path: puft database -> session data -> sessions
+                const sessionsRef = collection(db, "puft database", "session data", "sessions");
+
+                // Generate the code once so we can log it and save it
+                const newCode = generateSessionCode();
+
+                // This object matches the database structure we discussed
+                const sessionData = {
+                    lecture_name: lecturerName,
+                    session_code: newCode,            // The random 6-character string
+                    is_active: true,                  // The boolean "light switch" is ON
+                    created_at: serverTimestamp(),    // Firebase handles the exact time
+                    room_number: room
+                };
+
+                // addDoc automatically generates the unique 20-character Document ID!
+                const docRef = await addDoc(sessionsRef, sessionData);
+
+                // Ensure local storage is always tracking the session so auto-delete works!
+                localStorage.setItem("activeSessionId", docRef.id);
+                localStorage.setItem("activeSessionCode", newCode);
+                localStorage.setItem("activeSessionName", room);
+
+                console.log("Success! Session created with Auto-ID: ", docRef.id);
+                console.log("Tell the students to join with code: ", newCode);
+
+                // Update the Room Code display in the Participants Modal
+                document.getElementById("displayRoomCode").innerText = newCode;
+
+                // Listen to active participants
+                onSnapshot(doc(db, "puft database", "session data", "sessions", docRef.id), (docSnapshot) => {
+                    if (docSnapshot.exists()) {
+                        const data = docSnapshot.data();
+                        const allParticipants = data.joined_students || [];
+                        const students = allParticipants;
+                        window.currentSessionStudents = students;
+
+                        const listEl = document.getElementById("participantsList");
+                        if (students.length === 0) {
+                            listEl.innerHTML = "No participants yet.";
+                        } else {
+                            listEl.innerHTML = students.map((s, i) => {
+                                const name = typeof s === 'string' ? s : (s.name || "Unknown");
+                                const batch = typeof s === 'object' && s.batch_major ? s.batch_major : "N/A";
+                                const studentId = typeof s === 'object' && s.student_id ? s.student_id : "N/A";
+                                const roleBadge = typeof s === 'object' && s.role === 'Lecturer' ? '<span style="background:var(--accent-red);color:white;padding:2px 6px;border-radius:4px;font-size:10px;margin-left:8px;font-weight:bold;">LECTURER</span>' : '';
+
+                                let subDetails = [`ID: ${studentId}`, `Desc: ${batch}`];
+                                const subDetailsStr = subDetails.join(" • ");
+
+                                return `<div style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column;">
+                                    <div>${i + 1}. <strong style="color: var(--accent-red)">${name}</strong>${roleBadge}</div>
+                                    <div style="font-size: 11px; color: rgba(255,255,255,0.6); margin-left: 14px; margin-top: 2px;">${subDetailsStr}</div>
+                                </div>`;
+                            }).join('');
+                        }
+                    }
+                });
+
+            } catch (error) {
+                console.error("Error creating the session: ", error);
+            }
+        }
+
+        // ==========================================
+        // Example: How to trigger this in your app
+        // ==========================================
+        // We pull the logged in lecturer's name directly from their session
+        const sessionData = sessionStorage.getItem("sessionUser");
+        const sessionObj = sessionData ? JSON.parse(sessionData) : {};
+        const lecturerName = sessionObj.name || "Lecturer";
+
+        const activeSessionId = localStorage.getItem("activeSessionId");
+        const activeSessionCode = localStorage.getItem("activeSessionCode");
+
+        if (activeSessionId && activeSessionCode) {
+            // Session was already created in create.html! Just bind the UI and listener.
+            console.log("Joined existing active session: ", activeSessionId);
+            document.getElementById("displayRoomCode").innerText = activeSessionCode;
+
+            onSnapshot(doc(db, "puft database", "session data", "sessions", activeSessionId), (docSnapshot) => {
+                if (docSnapshot.exists()) {
+                    const data = docSnapshot.data();
+                    const allParticipants = data.joined_students || [];
+                    const students = allParticipants;
+                    window.currentSessionStudents = students;
+
+                    const listEl = document.getElementById("participantsList");
+                    if (students.length === 0) {
+                        listEl.innerHTML = "No participants yet.";
+                    } else {
+                        listEl.innerHTML = students.map((s, i) => {
+                            const name = typeof s === 'string' ? s : (s.name || "Unknown");
+                            const batch = typeof s === 'object' && s.batch_major ? s.batch_major : "N/A";
+                            const studentId = typeof s === 'object' && s.student_id ? s.student_id : "N/A";
+                            const roleBadge = typeof s === 'object' && s.role === 'Lecturer' ? '<span style="background:var(--accent-red);color:white;padding:2px 6px;border-radius:4px;font-size:10px;margin-left:8px;font-weight:bold;">LECTURER</span>' : '';
+
+                            let subDetails = [];
+                            if (studentId !== "N/A") subDetails.push(`ID: ${studentId}`);
+                            if (batch !== "N/A") subDetails.push(`Desc: ${batch}`);
+                            const subDetailsStr = subDetails.join(" • ");
+
+                            return `<div style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column;">
+                                <div>${i + 1}. <strong style="color: var(--accent-red)">${name}</strong>${roleBadge}</div>
+                                ${subDetailsStr ? `<div style="font-size: 11px; color: rgba(255,255,255,0.6); margin-left: 14px; margin-top: 2px;">${subDetailsStr}</div>` : ""}
+                            </div>`;
+                        }).join('');
+                    }
+                }
+            });
+        } else {
+            // Fallback: If they got here directly without creating a class, make one automatically.
+            startNewSession(lecturerName, "Classroom");
+        }
+
+        // Link the exit button to session deletion
+        window.returnToLobby = async (e) => {
+            if (e) e.preventDefault();
+            const currSessionId = localStorage.getItem("activeSessionId");
+
+            // Attempt deletion
+            if (currSessionId) {
+                try {
+                    await deleteDoc(doc(db, "puft database", "session data", "sessions", currSessionId));
+                    console.log("Successfully deleted the session.");
+                } catch (error) {
+                    console.error("Failed to delete session (you may not have permission):", error);
+                }
+            }
+
+            // Clear local references to the now-deleted session
+            localStorage.removeItem("activeSessionId");
+            localStorage.removeItem("activeSessionCode");
+            localStorage.removeItem("activeSessionName");
+
+            // Standard routing logic
+            window.executeExitRoute();
+        };
+
+        window.executeExitRoute = () => {
+            const sessionData = sessionStorage.getItem("sessionUser");
+            if (sessionData) {
+                try {
+                    const user = JSON.parse(sessionData);
+                    if (user && user.role) {
+                        if (user.role.toLowerCase() === "lecturer") {
+                            window.location.href = "lobby lect.html";
+                            return;
+                        } else if (user.role.toLowerCase() === "student") {
+                            window.location.href = "lobby.html";
+                            return;
+                        }
+                    }
+                } catch (err) {
+                    console.error("Error parsing user data: ", err);
+                }
+            }
+            window.location.href = "lobby lect.html";
+        };
+
+        // ==========================================
+        // 3. Inactivity Timeout (5 Minutes)
+        // ==========================================
+        let inactivityTimer;
+        const INACTIVITY_LIMIT_MS = 5 * 60 * 1000; // 5 minutes
+
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(async () => {
+                // Delete session silently in the background
+                const currSessionId = localStorage.getItem("activeSessionId");
+                if (currSessionId) {
+                    try {
+                        await deleteDoc(doc(db, "puft database", "session data", "sessions", currSessionId));
+                    } catch (e) { console.error(e); }
+                }
+                localStorage.removeItem("activeSessionId");
+                localStorage.removeItem("activeSessionCode");
+                localStorage.removeItem("activeSessionName");
+
+                // Show the beautiful modal
+                document.getElementById('timeoutModal').classList.add('active');
+            }, INACTIVITY_LIMIT_MS);
+        }
+
+        // Listen for activity to reset the timer
+        window.addEventListener('mousemove', resetInactivityTimer);
+        window.addEventListener('mousedown', resetInactivityTimer);
+        window.addEventListener('keypress', resetInactivityTimer);
+        window.addEventListener('touchstart', resetInactivityTimer);
+
+        // Start the timer right away
+        resetInactivityTimer();
+    </script>
+
+    <!-- TIMEOUT MODAL OVERLAY -->
+    <div id="timeoutModal" class="modal-overlay" style="z-index: 5000;">
+        <div class="modal-content" style="max-width: 400px; text-align: center; border-color: rgba(255, 77, 77, 0.4);">
+            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="var(--primary-red)" stroke-width="2"
+                style="margin-bottom: 20px;">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <h2 style="font-family: 'Baloo Bhai 2'; color: var(--accent-red); margin-bottom: 10px; font-size: 28px;">
+                Session Closed</h2>
+            <p style="color: rgba(255,255,255,0.7); margin-bottom: 25px; line-height: 1.5;">This session was
+                automatically terminated due to 5 minutes of inactivity.</p>
+            <button onclick="window.executeExitRoute()"
+                style="padding: 14px 25px; width: 100%; border: none; border-radius: 12px; background: linear-gradient(90deg, #822a2a, #A93737); color: white; font-family: 'Baloo Bhai 2'; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(169,55,55,0.4);"
+                onmouseover="this.style.transform='translateY(-2px)'"
+                onmouseout="this.style.transform='translateY(0)'">Return to Lobby</button>
+        </div>
+    </div>
+
 </body>
+
 </html>

@@ -4,124 +4,538 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Join Class - PUFT</title>
-    <link rel="stylesheet" href="join.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@600&family=Cabin:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #60a5fa;
+            --bg-dark: #0d1520;
+            --bg-accent: #0f2040;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(96, 165, 250, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--bg-dark);
+            font-family: 'Cabin', sans-serif;
+            color: white;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- MOVING BACKGROUND ELEMENTS --- */
+        .bg-animate {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-accent) 100%);
+            overflow: hidden;
+        }
+
+        /* The glowing orbs */
+       /* --- UPDATED MOVING BACKGROUND --- */
+.bg-animate {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    background: radial-gradient(circle at center, var(--bg-accent) 0%, var(--bg-dark) 100%);
+    overflow: hidden;
+}
+
+.orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.5;
+    mix-blend-mode: screen;
+}
+
+.orb-1 {
+    width: 650px;
+    height: 650px;
+    background: #2563eb;
+    top: -10%;
+    left: -10%;
+    animation: move-top 25s infinite alternate ease-in-out;
+}
+
+.orb-2 {
+    width: 750px;
+    height: 750px;
+    background: #1e3a5f;
+    bottom: -10%;
+    right: -10%;
+    animation: move-bottom 30s infinite alternate ease-in-out;
+}
+
+/* Specific paths for each orb so they don't just follow the same line */
+@keyframes move-top {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(20vw, 15vh) rotate(90deg); }
+    100% { transform: translate(-5vw, 25vh) rotate(180deg); }
+}
+
+@keyframes move-bottom {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-15vw, -20vh) scale(1.2); }
+    100% { transform: translate(10vw, -10vh) scale(1); }
+}
+
+        /* --- BACK BUTTON --- */
+        .back-nav {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 14px;
+            transition: 0.3s;
+            z-index: 10;
+        }
+
+        .back-nav:hover {
+            color: var(--primary);
+            transform: translateX(-3px);
+        }
+
+        /* --- GLASS CARD --- */
+        .join-card {
+            width: 100%;
+            max-width: 400px;
+            padding: 50px 40px;
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            z-index: 5;
+            animation: cardAppear 1s ease-out;
+        }
+
+        @keyframes cardAppear {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .join-title {
+            font-family: 'Baloo Bhai 2', cursive;
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .join-subtitle {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 40px;
+        }
+
+        /* --- INPUT --- */
+        .input-group {
+            position: relative;
+            margin-bottom: 35px;
+        }
+
+        .class-input {
+            width: 100%;
+            padding: 10px 0;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 28px;
+            font-family: 'Baloo Bhai 2', cursive;
+            text-align: center;
+            letter-spacing: 4px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .class-input:focus {
+            border-bottom: 1px solid var(--primary);
+        }
+
+        .input-label {
+            position: absolute;
+            top: -15px;
+            left: 0;
+            right: 0;
+            color: var(--primary);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* --- BUTTON --- */
+        .join-button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(90deg, #1e3a5f, #2563eb);
+            color: white;
+            font-family: 'Baloo Bhai 2', cursive;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .join-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(96, 165, 250, 0.3);
+        }
+
+        /* --- CUSTOM TOAST NOTIFICATION --- */
+        #toast-container {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            pointer-events: none;
+        }
+
+        .toast {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 16px 22px;
+            border-radius: 18px;
+            background: rgba(23, 31, 36, 0.85);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.04);
+            color: white;
+            font-family: 'Cabin', sans-serif;
+            font-size: 14px;
+            max-width: 360px;
+            min-width: 280px;
+            pointer-events: auto;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(-20px) scale(0.95);
+            transition: opacity 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .toast.hide {
+            opacity: 0;
+            transform: translateY(-16px) scale(0.95);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        .toast-icon {
+            flex-shrink: 0;
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toast-icon.error { background: rgba(231, 76, 60, 0.2); border: 1px solid rgba(231, 76, 60, 0.35); }
+        .toast-icon.warning { background: rgba(243, 156, 18, 0.2); border: 1px solid rgba(243, 156, 18, 0.35); }
+        .toast-icon.info { background: rgba(127, 172, 204, 0.2); border: 1px solid rgba(127, 172, 204, 0.35); }
+
+        .toast-body { flex: 1; }
+        .toast-title {
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            margin-bottom: 3px;
+        }
+        .toast-msg { font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.4; }
+
+        .toast-icon.error .toast-title { color: #ff7675; }
+        .toast-icon.warning .toast-title { color: #fdcb6e; }
+        .toast-icon.info .toast-title { color: var(--primary); }
+
+        .toast-left-bar {
+            width: 3px;
+            align-self: stretch;
+            border-radius: 99px;
+            flex-shrink: 0;
+        }
+        .toast.error-toast .toast-left-bar { background: #e74c3c; }
+        .toast.warning-toast .toast-left-bar { background: #f39c12; }
+        .toast.info-toast .toast-left-bar { background: var(--primary); }
+
+        /* ─── MOBILE RESPONSIVE ─────────────────────────────────────────── */
+        @media (max-width: 600px) {
+            body {
+                overflow: auto;
+                height: auto;
+                min-height: 100vh;
+                align-items: flex-start;
+                padding: 80px 0 32px;
+            }
+
+            .back-nav {
+                top: 20px;
+                left: 16px;
+            }
+
+            .join-card {
+                padding: 36px 24px;
+                border-radius: 22px;
+                margin: 0 16px;
+                width: calc(100% - 32px);
+            }
+
+            .join-title {
+                font-size: 26px;
+            }
+
+            .join-subtitle {
+                font-size: 13px;
+                margin-bottom: 28px;
+            }
+
+            .class-input {
+                font-size: 22px;
+                letter-spacing: 3px;
+            }
+
+            .join-button {
+                font-size: 16px;
+                padding: 12px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="lobby-container">
-        <!-- Wave Section -->
-        <div class="wave-section">
-            <!-- BAWAH (Bottom Wave) -->
-            <div class="wave-bawah">
-                <div class="wave-bawah-inner">
-                    <svg class="wave-svg" fill="none" preserveAspectRatio="none" viewBox="0 0 2896.99 268">
-                        <g filter="url(#filter0_d_10_130)" id="BAWAH" opacity="0.6">
-                            <path d="M2891.99 1C2891.99 69.4259 2739.91 135.049 2469.2 183.434C2198.49 231.818 1831.33 259 1448.5 259C1065.66 259 698.498 231.818 427.79 183.434C157.082 135.049 5.00006 69.4259 5 1H2891.99Z" fill="url(#paint0_linear_10_130)" />
-                        </g>
-                        <defs>
-                            <filter colorInterpolationFilters="sRGB" filterUnits="userSpaceOnUse" height="268" id="filter0_d_10_130" width="2896.99" x="0" y="0">
-                                <feFlood floodOpacity="0" result="BackgroundImageFix" />
-                                <feColorMatrix in="SourceAlpha" result="hardAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
-                                <feOffset dy="4" />
-                                <feGaussianBlur stdDeviation="2.5" />
-                                <feComposite in2="hardAlpha" operator="out" />
-                                <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
-                                <feBlend in2="BackgroundImageFix" mode="normal" result="effect1_dropShadow_10_130" />
-                                <feBlend in="SourceGraphic" in2="effect1_dropShadow_10_130" mode="normal" result="shape" />
-                            </filter>
-                            <linearGradient gradientUnits="userSpaceOnUse" id="paint0_linear_10_130" x1="5" x2="2891.99" y1="130" y2="130">
-                                <stop offset="0.307692" stop-color="#435663" />
-                                <stop offset="0.528846" stop-color="#313647" />
-                            </linearGradient>
-                        </defs>
-                    </svg>
-                </div>
-            </div>
-            
-            <!-- TENGA (Middle Wave) -->
-            <div class="wave-tenga">
-                <svg class="wave-svg" fill="none" preserveAspectRatio="none" viewBox="0 0 2886.99 258">
-                    <path d="M2886.99 0C2886.99 68.4259 2734.91 134.049 2464.2 182.434C2193.49 230.818 1826.33 258 1443.5 258C1060.66 258 693.498 230.818 422.79 182.434C152.082 134.049 5.7807e-05 68.4259 0 0H2886.99Z" fill="url(#paint0_linear_10_127)" id="TENGA" opacity="0.6" />
-                    <defs>
-                        <linearGradient gradientUnits="userSpaceOnUse" id="paint0_linear_10_127" x1="0" x2="2886.99" y1="129" y2="129">
-                            <stop offset="0.307692" stop-color="#435663" />
-                            <stop offset="0.528846" stop-color="#313647" />
-                        </linearGradient>
-                    </defs>
-                </svg>
-            </div>
-            
-            <!-- ATAS (Top Wave) -->
-            <div class="wave-atas">
-                <svg class="wave-svg" fill="none" preserveAspectRatio="none" viewBox="0 0 2886.99 258">
-                    <path d="M2886.99 0C2886.99 68.4259 2734.91 134.049 2464.2 182.434C2193.49 230.818 1826.33 258 1443.5 258C1060.66 258 693.498 230.818 422.79 182.434C152.082 134.049 5.7807e-05 68.4259 0 0H2886.99Z" fill="url(#paint0_linear_10_124)" id="ATAS" opacity="0.45" />
-                    <defs>
-                        <linearGradient gradientUnits="userSpaceOnUse" id="paint0_linear_10_124" x1="0" x2="2886.99" y1="129" y2="129">
-                            <stop offset="0.307692" stop-color="#435663" />
-                            <stop offset="0.528846" stop-color="#313647" />
-                        </linearGradient>
-                    </defs>
-                </svg>
-            </div>
-            
-            <!-- Input Field -->
-            <div class="input-container">
-                <div class="input-shadow"></div>
-                <input type="text" class="class-code-input" placeholder="" />
-            </div>
-            
-            <!-- Title -->
-            <p class="form-title">Enter Class Code</p>
-            
-            <!-- Join Button Container -->
-            <div class="join-button-container" id="joinBtn">
-                <div class="join-button-bg">
-                    <div class="join-button-shadow"></div>
-                </div>
-                <p class="join-button-text">JOIN</p>
-            </div>
-            
-          
-        </div>
-        
-        <!-- Footer Bar -->
-        <div class="footer-bar"></div>
-        
-        <!-- Back Arrow -->
-        <div class="back-arrow">
-            <svg class="arrow-svg" fill="none" preserveAspectRatio="none" viewBox="0 0 86 54">
-                <g clip-path="url(#clip0_10_121)" id="Frame 23">
-                    <g filter="url(#filter0_d_10_121)" id="Arrow 1">
-                        <path d="M78.9817 30.5C80.9146 30.5101 82.4898 28.9513 82.5 27.0183C82.5101 25.0854 80.9513 23.5102 79.0183 23.5L79 27L78.9817 30.5ZM3.52205 24.13C2.14809 25.4897 2.13649 27.7057 3.49614 29.0797L25.6531 51.4698C27.0128 52.8438 29.2288 52.8554 30.6028 51.4957C31.9768 50.1361 31.9884 47.92 30.6287 46.5461L10.9336 26.6437L30.836 6.94863C32.2099 5.58897 32.2215 3.37292 30.8619 1.99895C29.5022 0.624979 27.2862 0.613379 25.9122 1.97304L3.52205 24.13ZM79 27L79.0183 23.5L6.00226 23.1179L5.98394 26.6178L5.96562 30.1178L78.9817 30.5L79 27Z" fill="#A93737" />
-                    </g>
-                </g>
-                <defs>
-                    <filter colorInterpolationFilters="sRGB" filterUnits="userSpaceOnUse" height="59.5471" id="filter0_d_10_121" width="88.0161" x="-1.51606" y="0.960834">
-                        <feFlood floodOpacity="0" result="BackgroundImageFix" />
-                        <feColorMatrix in="SourceAlpha" result="hardAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
-                        <feOffset dy="4" />
-                        <feGaussianBlur stdDeviation="2" />
-                        <feComposite in2="hardAlpha" operator="out" />
-                        <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
-                        <feBlend in2="BackgroundImageFix" mode="normal" result="effect1_dropShadow_10_121" />
-                        <feBlend in="SourceGraphic" in2="effect1_dropShadow_10_121" mode="normal" result="shape" />
-                    </filter>
-                    <clipPath id="clip0_10_121">
-                        <rect fill="white" height="54" width="86" />
-                    </clipPath>
-                </defs>
-            </svg>
-        </div>
+
+    <div id="toast-container"></div>
+
+    <div class="bg-animate">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
     </div>
 
-    <script>
-    document.getElementById("joinBtn").addEventListener("click", function () {
-        window.location.href = "join class(button).html"; 
-        // change to any page you want, e.g. class-room.html
-    });
-</script>
+    <a href="#" onclick="returnToLobby(event)" class="back-nav">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        Back to Lobby
+    </a>
 
+    <script>
+        /* ---- TOAST NOTIFICATION SYSTEM ---- */
+        function showToast(type, title, message, duration = 4000) {
+            const container = document.getElementById('toast-container');
+
+            const icons = {
+                error: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+                warning: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f39c12" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+                info: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7faccc" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`
+            };
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}-toast`;
+            toast.innerHTML = `
+                <div class="toast-left-bar"></div>
+                <div class="toast-icon ${type}">${icons[type] || icons.info}</div>
+                <div class="toast-body">
+                    <div class="toast-title" style="color: ${type === 'error' ? '#ff7675' : type === 'warning' ? '#fdcb6e' : '#7faccc'}">${title}</div>
+                    <div class="toast-msg">${message}</div>
+                </div>
+            `;
+
+            container.appendChild(toast);
+
+            // Animate in
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => toast.classList.add('show'));
+            });
+
+            const dismiss = () => {
+                toast.classList.add('hide');
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            };
+
+            toast.addEventListener('click', dismiss);
+            setTimeout(dismiss, duration);
+        }
+
+        function returnToLobby(e) {
+            e.preventDefault();
+            const sessionData = sessionStorage.getItem("sessionUser");
+            if (sessionData) {
+                try {
+                    const user = JSON.parse(sessionData);
+                    if (user && user.role) {
+                        if (user.role.toLowerCase() === "lecturer") {
+                            window.location.href = "lobby lect.html";
+                            return;
+                        } else if (user.role.toLowerCase() === "student") {
+                            window.location.href = "lobby.html";
+                            return;
+                        }
+                    }
+                } catch(err) {
+                    console.error("Error parsing user data: ", err);
+                }
+            }
+            window.location.href = "lobby.html";
+        }
+    </script>
+
+    <div class="join-card">
+        <h1 class="join-title">Join Class</h1>
+        <p class="join-subtitle">Enter your room code to participate.</p>
+        
+        <div class="input-group">
+            <label class="input-label">Room Code</label>
+            <input type="text" 
+                   class="class-input" 
+                   id="classCode" 
+                   placeholder="--- ---" 
+                   maxlength="6"
+                   autocomplete="off">
+        </div>
+
+        <button class="join-button" id="joinBtn">Connect</button>
+    </div>
+
+    <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+import { getFirestore, collection, query, where, getDocs, doc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js"; 
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCu4ZFec3lEByyL1sAvP0VLR-ghUh5osfM",
+  authDomain: "puft-database-33f12.firebaseapp.com",
+  projectId: "puft-database-33f12",
+  storageBucket: "puft-database-33f12.firebasestorage.app",
+  messagingSenderId: "1018103500164",
+  appId: "1:1018103500164:web:173938f4af0e0c0ab961d1"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app); 
+
+const classInput = document.getElementById("classCode");
+const joinBtn = document.getElementById("joinBtn");
+
+async function handleJoin() {
+    const code = classInput.value;
+    if (code.length !== 6) {
+        showToast('warning', 'Invalid Code', 'Please enter a valid 6-character room code.');
+        return;
+    }
+
+    joinBtn.innerText = "Connecting...";
+    joinBtn.disabled = true;
+    joinBtn.style.opacity = "0.7";
+
+    try {
+        const sessionsRef = collection(db, "puft database", "session data", "sessions");
+        const q = query(sessionsRef, where("session_code", "==", code));
+        const querySnapshot = await getDocs(q);
+
+        let activeSessionDoc = null;
+        querySnapshot.forEach((d) => {
+            if (d.data().is_active === true) {
+                activeSessionDoc = { id: d.id, ...d.data() };
+            }
+        });
+
+        if (!activeSessionDoc) {
+            showToast('error', 'Session Not Found', 'No active session found with this code. Double-check and try again.');
+            joinBtn.innerText = "Connect";
+            joinBtn.disabled = false;
+            joinBtn.style.opacity = "1";
+            return;
+        }
+
+        // Get the logged in student's details
+        const sessionData = sessionStorage.getItem("sessionUser");
+        let userName = "Anonymous User";
+        let userDetail = "";
+        let userIdStr = "";
+        let userRole = "Student";
+        
+        if (sessionData) {
+            const user = JSON.parse(sessionData);
+            userName = user.name || "Anonymous User";
+            userRole = user.role || "Student";
+            
+            if (userRole === "Lecturer") {
+                userDetail = user.department || "";
+                userIdStr = user.employee_id || "";
+            } else {
+                userDetail = user.batch_major || "";
+                userIdStr = user.student_id || "";
+            }
+        }
+
+        // Add the user to the session's joined_students array
+        const sessionRef = doc(db, "puft database", "session data", "sessions", activeSessionDoc.id);
+        await updateDoc(sessionRef, {
+            joined_students: arrayUnion({ name: userName, batch_major: userDetail, student_id: userIdStr, role: userRole })
+        });
+
+        // Store the current active session in localStorage to sync context across pages
+        localStorage.setItem("activeSessionId", activeSessionDoc.id);
+        localStorage.setItem("activeSessionCode", code);
+        localStorage.setItem("activeSessionName", activeSessionDoc.class_name || "Active Session");
+        
+        // Navigate
+        window.location.href = "join class(button).html"; 
+
+    } catch (error) {
+        console.error("Error joining session:", error);
+        showToast('error', 'Connection Error', 'Something went wrong. Please try again.');
+        joinBtn.innerText = "Connect";
+        joinBtn.disabled = false;
+        joinBtn.style.opacity = "1";
+    }
+}
+
+classInput.addEventListener('input', (e) => {
+    let value = e.target.value.toUpperCase();
+    value = value.replace(/[^A-Z0-9]/g, '');
+    e.target.value = value;
+});
+
+classInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') handleJoin();
+});
+
+joinBtn.addEventListener('click', handleJoin);
+</script>
 </body>
 </html>

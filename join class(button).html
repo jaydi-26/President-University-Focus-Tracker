@@ -1,123 +1,874 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Join Class - PUFT</title>
-    <link rel="stylesheet" href="jc button.css">
+    <title>Join Class - PUFT Blue</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@600;800&family=Poppins:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #2563eb;
+            --accent-blue: #60a5fa;
+            --bg-dark: #0d1520;
+            --bg-accent: #0f2040;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(96, 165, 250, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%;
+            height: 100vh;
+            background-color: var(--bg-dark);
+            font-family: 'Poppins', sans-serif;
+            color: white;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- BACKGROUND --- */
+        .bg-animate {
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            background: radial-gradient(circle at center, var(--bg-accent) 0%, var(--bg-dark) 100%);
+            overflow: hidden;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.5;
+            mix-blend-mode: screen;
+            animation: drift 25s infinite alternate ease-in-out;
+        }
+
+        .orb-1 {
+            width: 650px;
+            height: 650px;
+            background: var(--primary-blue);
+            top: -10%;
+            left: -10%;
+        }
+
+        .orb-2 {
+            width: 750px;
+            height: 750px;
+            background: #1e3a5f;
+            bottom: -10%;
+            right: -10%;
+            animation-delay: -5s;
+        }
+
+        @keyframes drift {
+            from {
+                transform: translate(0, 0);
+            }
+
+            to {
+                transform: translate(15vw, 15vh);
+            }
+        }
+
+        /* --- NEW BLUR OVERLAY --- */
+        #notif-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(0px);
+            pointer-events: none;
+            z-index: 1999;
+            transition: all 0.5s ease;
+            opacity: 0;
+        }
+
+        #notif-overlay.active {
+            backdrop-filter: blur(15px);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* --- CENTERED NOTIFICATION --- */
+        #notification-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.6);
+            opacity: 0;
+            width: 90%;
+            max-width: 420px;
+            background: rgba(23, 31, 36, 0.95);
+            backdrop-filter: blur(20px);
+            border: 3px solid var(--accent-blue);
+            border-radius: 35px;
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 25px;
+            z-index: 2000;
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 60px rgba(77, 163, 255, 0.5);
+            pointer-events: none;
+        }
+
+        #notification-box.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: auto;
+        }
+
+        .notif-icon {
+            background: var(--accent-blue);
+            border-radius: 50%;
+            padding: 20px;
+            display: flex;
+            animation: pulse-ring 1.5s infinite;
+            box-shadow: 0 0 25px var(--accent-blue);
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                box-shadow: 0 0 0 0 rgba(77, 163, 255, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 25px rgba(77, 163, 255, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(77, 163, 255, 0);
+            }
+        }
+
+        /* --- EXIT NAV --- */
+        .exit-nav {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-family: 'Baloo Bhai 2', cursive;
+            font-size: 18px;
+            z-index: 100;
+            background: var(--glass);
+            padding: 10px 24px;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .exit-nav:hover {
+            color: white;
+            background: rgba(55, 86, 169, 0.2);
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 20px rgba(77, 163, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        /* --- PARTICIPANTS NAV --- */
+        .participants-btn {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-family: 'Baloo Bhai 2', cursive;
+            font-size: 18px;
+            z-index: 100;
+            background: var(--glass);
+            padding: 10px 24px;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .participants-btn:hover {
+            color: white;
+            background: rgba(55, 86, 169, 0.2);
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 20px rgba(77, 163, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        /* --- SLIDER --- */
+        .slider-container {
+            display: flex;
+            width: 200vw;
+            height: 100vh;
+            transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        .page {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        /* --- ARROWS --- */
+        .slide-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: rgba(127, 172, 204, 0.4);
+            cursor: pointer;
+            z-index: 1000;
+            padding: 20px;
+            transition: color 0.3s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .slide-arrow svg {
+            width: 60px;
+            height: 60px;
+            filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
+        }
+
+        .slide-arrow:hover {
+            color: var(--accent-blue);
+            transform: translateY(-50%) scale(1.25);
+        }
+
+        .arrow-right {
+            right: 30px;
+            animation: nudgeRight 2s infinite ease-in-out;
+        }
+
+        .arrow-left {
+            left: 30px;
+            animation: nudgeLeft 2s infinite ease-in-out;
+        }
+
+        @keyframes nudgeRight {
+
+            0%,
+            100% {
+                right: 30px;
+            }
+
+            50% {
+                right: 48px;
+            }
+        }
+
+        @keyframes nudgeLeft {
+
+            0%,
+            100% {
+                left: 30px;
+            }
+
+            50% {
+                left: 48px;
+            }
+        }
+
+        /* --- CARDS --- */
+        .student-card {
+            width: 90%;
+            max-width: 420px;
+            padding: 35px;
+            background: var(--glass);
+            backdrop-filter: blur(35px);
+            border: 1px solid var(--glass-border);
+            border-radius: 35px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+            text-align: center;
+        }
+
+        .chat-container {
+            height: 280px;
+            overflow-y: auto;
+            margin-top: 20px;
+            padding-right: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .ai-placeholder {
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            animation: pulse 2s infinite ease-in-out;
+            opacity: 0.5;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: scale(0.95);
+            }
+
+            50% {
+                opacity: 0.7;
+                transform: scale(1);
+            }
+        }
+
+        .ai-icon-circle {
+            width: 60px;
+            height: 60px;
+            border: 2px dashed var(--accent-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .follow-button {
+            width: 100%;
+            height: 80px;
+            background: linear-gradient(135deg, #1e3a5f 0%, #0d1520 100%);
+            border: 2px solid rgba(96, 165, 250, 0.15);
+            border-radius: 20px;
+            cursor: not-allowed;
+            opacity: 0.35;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .follow-button:not(:disabled) {
+            cursor: pointer;
+            opacity: 1;
+            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 50%, #60a5fa 100%);
+            border: 2px solid #60a5fa;
+            box-shadow: 0 0 25px rgba(96, 165, 250, 0.5), 0 10px 30px rgba(37, 99, 235, 0.4);
+            animation: btnPulse 2s infinite ease-in-out;
+        }
+
+        @keyframes btnPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(96, 165, 250, 0.4), 0 10px 30px rgba(37, 99, 235, 0.3); }
+            50%       { box-shadow: 0 0 40px rgba(96, 165, 250, 0.8), 0 15px 40px rgba(37, 99, 235, 0.6); }
+        }
+
+        .follow-button:not(:disabled):hover {
+            transform: scale(1.05);
+            filter: brightness(1.15);
+        }
+
+        .button-text {
+            font-family: 'Baloo Bhai 2', cursive;
+            font-size: 28px;
+            color: white;
+            font-weight: 800;
+        }
+
+        .status-text {
+            margin-top: 20px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .chat-container::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb {
+            background: var(--primary-blue);
+            border-radius: 10px;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-blue);
+        }
+
+        /* ─── MOBILE RESPONSIVE ─────────────────────────────────────────── */
+        @media (max-width: 768px) {
+            /* Reposition nav buttons so they don't overlap on small screens */
+            .exit-nav {
+                top: auto;
+                left: auto;
+                bottom: 16px;
+                left: 50%;
+                transform: translateX(calc(-50% - 90px));
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+
+            .participants-btn {
+                top: auto;
+                right: auto;
+                bottom: 16px;
+                left: 50%;
+                transform: translateX(calc(-50% + 90px));
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+
+            /* Slide pages need bottom padding for the nav buttons */
+            .page {
+                padding-bottom: 80px;
+            }
+
+            /* Scale down arrow buttons */
+            .slide-arrow svg {
+                width: 40px;
+                height: 40px;
+            }
+
+            .slide-arrow {
+                padding: 12px;
+            }
+
+            /* Student card fits screen width */
+            .student-card {
+                width: 88%;
+                max-width: 380px;
+                padding: 24px 20px;
+                border-radius: 24px;
+            }
+
+            /* Shrink the follow button slightly */
+            .follow-button {
+                height: 70px;
+            }
+
+            .button-text {
+                font-size: 22px;
+            }
+
+            /* Notification box */
+            #notification-box {
+                width: 88%;
+                padding: 28px 20px;
+                gap: 18px;
+                border-radius: 24px;
+            }
+
+            #notification-box h2 {
+                font-size: 24px !important;
+            }
+
+            /* Chat container */
+            .chat-container {
+                height: 220px;
+            }
+
+            .ai-icon-circle {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .exit-nav {
+                transform: translateX(calc(-50% - 78px));
+                font-size: 13px;
+                padding: 7px 12px;
+                gap: 8px;
+            }
+
+            .participants-btn {
+                transform: translateX(calc(-50% + 78px));
+                font-size: 13px;
+                padding: 7px 12px;
+                gap: 8px;
+            }
+
+            .student-card {
+                width: 92%;
+                padding: 20px 16px;
+            }
+
+            .follow-button {
+                height: 64px;
+            }
+
+            .button-text {
+                font-size: 20px;
+            }
+
+            .status-text {
+                font-size: 13px;
+            }
+
+            #status-badge {
+                font-size: 14px;
+            }
+
+            .chat-container {
+                height: 190px;
+            }
+
+            .slide-arrow svg {
+                width: 32px;
+                height: 32px;
+            }
+
+            /* Participants modal */
+            #participants-modal > div {
+                padding: 20px 16px !important;
+                border-radius: 16px !important;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <div class="lobby">
-        <!-- Frame -->
-        <div class="frame"></div>
 
-        <!-- Follow Button / Respond Button -->
-        <button id="btnB" class="follow-button">
-            <div class="button-background">
-                <div class="button-shadow"></div>
-            </div>
-            <p class="button-text">Respond</p>
-        </div>
+    <div id="notif-overlay"></div>
 
-            
-
-<script>
-(() => {
-  const btnB = document.getElementById("btnB");
-  const status = document.getElementById("status");
-
-  const ON_TIME = 10 * 1000;
-  const OFF_TIME = 10 * 1000;
-
-  let lastEnabled = null;
-
-  function render() {
-    const state = localStorage.getItem("seq_state");
-    const cycle = localStorage.getItem("seq_cycle");
-    const start = Number(localStorage.getItem("seq_phase_start"));
-
-    if (!state || state === "done") {
-      setEnabled(false);
-      status.textContent = "Finished";
-      return;
-    }
-
-    const elapsed = Date.now() - start;
-
-    if (state === "on") {
-      setEnabled(true);
-      const remain = Math.ceil((ON_TIME - elapsed) / 1000);
-      status.textContent = `ON (cycle ${cycle}/3 — ${remain}s)`;
-    }
-
-    if (state === "off") {
-      setEnabled(false);
-      const remain = Math.ceil((OFF_TIME - elapsed) / 1000);
-      status.textContent = `OFF (cycle ${cycle}/3 — ${remain}s)`;
-    }
-  }
-
-  function setEnabled(val) {
-    if (lastEnabled !== val) {
-      btnB.disabled = !val;
-      lastEnabled = val;
-    }
-  }
-
-  // 🔘 Button press → notify Room A
-  btnB.addEventListener("click", () => {
-    localStorage.setItem("seq_press_event", Date.now());
-  });
-
-  setInterval(render, 500);
-  window.addEventListener("storage", render);
-  render();
-})();
-
-  btnB.addEventListener("click", () => {
-  localStorage.setItem("seq_press_event", Date.now());
-});
-
-
-</script>
-
-
-        <!-- Bottom Bar -->
-        <div class="bottom-bar"></div>
-
-        <!-- Arrow -->
-        <div class="arrow-container">
-            <svg class="arrow-svg" fill="none" preserveAspectRatio="none" viewBox="0 0 86 54">
-                <g clip-path="url(#clip0_1_84)">
-                    <g filter="url(#filter0_d_1_84)">
-                        <path d="M78.9817 30.5C80.9146 30.5101 82.4898 28.9513 82.5 27.0183C82.5101 25.0854 80.9513 23.5102 79.0183 23.5L79 27L78.9817 30.5ZM3.52205 24.13C2.14809 25.4897 2.13649 27.7057 3.49614 29.0797L25.6531 51.4698C27.0128 52.8438 29.2288 52.8554 30.6028 51.4957C31.9768 50.1361 31.9884 47.92 30.6287 46.5461L10.9336 26.6437L30.836 6.94863C32.2099 5.58897 32.2215 3.37292 30.8619 1.99895C29.5022 0.624979 27.2862 0.613379 25.9122 1.97304L3.52205 24.13ZM79 27L79.0183 23.5L6.00226 23.1179L5.98394 26.6178L5.96562 30.1178L78.9817 30.5L79 27Z" fill="#A93737" />
-                    </g>
-                </g>
-                <defs>
-                    <filter color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse" height="59.5471" id="filter0_d_1_84" width="88.0161" x="-1.51606" y="0.960834">
-                        <feFlood flood-opacity="0" result="BackgroundImageFix" />
-                        <feColorMatrix in="SourceAlpha" result="hardAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
-                        <feOffset dy="4" />
-                        <feGaussianBlur stdDeviation="2" />
-                        <feComposite in2="hardAlpha" operator="out" />
-                        <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
-                        <feBlend in2="BackgroundImageFix" mode="normal" result="effect1_dropShadow_1_84" />
-                        <feBlend in="SourceGraphic" in2="effect1_dropShadow_1_84" mode="normal" result="shape" />
-                    </filter>
-                    <clipPath id="clip0_1_84">
-                        <rect fill="white" height="54" width="86" />
-                    </clipPath>
-                </defs>
+    <div id="notification-box">
+        <div class="notif-icon">
+            <svg width="45" height="45" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
             </svg>
         </div>
-
-        <!-- Image -->
-        <div class="image-container">
-            <img alt="" class="image" src="puft-removebg-preview.png" />
+        <div>
+            <h2 style="font-family: 'Baloo Bhai 2'; color: var(--accent-blue); font-size: 32px; margin-bottom: 8px;">
+                SEQUENCE ACTIVE</h2>
+            <p style="font-size: 16px; color: white; opacity: 0.9; margin-bottom: 20px;">The lecture has pressed the
+                button!</p>
+            <p style="font-size: 12px; color: var(--accent-blue); letter-spacing: 2px; font-weight: bold;">CLICK TO
+                DISMISS</p>
         </div>
     </div>
+
+    <div class="bg-animate">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+
+    <a href="#" onclick="returnToLobby(event)" class="exit-nav">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+        Exit to Lobby
+    </a>
+
+    <script>
+        function returnToLobby(e) {
+            e.preventDefault();
+            const sessionData = sessionStorage.getItem("sessionUser");
+            if (sessionData) {
+                try {
+                    const user = JSON.parse(sessionData);
+                    if (user && user.role) {
+                        if (user.role.toLowerCase() === "lecturer") {
+                            window.location.href = "lobby lect.html";
+                            return;
+                        } else if (user.role.toLowerCase() === "student") {
+                            window.location.href = "lobby.html";
+                            return;
+                        }
+                    }
+                } catch (err) {
+                    console.error("Error parsing user data: ", err);
+                }
+            }
+            window.location.href = "lobby.html";
+        }
+    </script>
+
+    <button class="participants-btn" onclick="openParticipants()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            <path d="M19 21v-2a4 4 0 0 0-2-3"></path>
+        </svg>
+        View Participants
+    </button>
+
+    <div id="participants-modal"
+        style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 3000; opacity: 0; pointer-events: none; transition: opacity 0.3s; display: flex; justify-content: center; align-items: center;">
+        <div
+            style="background: rgba(23, 31, 36, 0.95); border: 2px solid var(--accent-blue); padding: 30px; border-radius: 20px; width: 90%; max-width: 400px; box-shadow: 0 15px 40px rgba(0,0,0,0.5);">
+            <h2
+                style="font-family: 'Baloo Bhai 2'; color: var(--accent-blue); margin-bottom: 20px; text-align: center; font-size: 28px;">
+                PARTICIPANTS</h2>
+            <div id="participantsList"
+                style="max-height: 250px; overflow-y: auto; text-align: left; font-size: 16px; color: white;">
+                Waiting for student data...
+            </div>
+            <button onclick="closeParticipants()"
+                style="margin-top: 20px; width: 100%; padding: 14px; background: var(--accent-blue); color: white; border: none; border-radius: 12px; cursor: pointer; font-family: 'Baloo Bhai 2'; font-size: 18px; font-weight: bold; transition: 0.3s;">CLOSE</button>
+        </div>
+    </div>
+
+    <div class="slider-container" id="mainSlider">
+        <section class="page">
+            <button class="slide-arrow arrow-right" onclick="slide(1)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M9 18l6-6-6-6" />
+                </svg>
+            </button>
+            <div class="student-card">
+                <div id="status-badge" style="margin-bottom: 15px; font-weight: bold; color: var(--accent-blue);">
+                    Waiting...</div>
+                <button id="btnB" class="follow-button" disabled>
+                    <span class="button-text">RESPOND</span>
+                </button>
+                <p id="status" class="status-text">Ready for session</p>
+            </div>
+        </section>
+
+        <section class="page">
+            <button class="slide-arrow arrow-left" onclick="slide(0)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M15 18l-6-6 6-6" />
+                </svg>
+            </button>
+            <div class="student-card">
+                <h2 style="font-family: 'Baloo Bhai 2'; color: var(--accent-blue); font-size: 28px;">LIVE QUESTIONS</h2>
+                <div class="chat-container" id="chatFeed">
+                    <div class="ai-placeholder" id="chatPlaceholder">
+                        <div class="ai-icon-circle">
+                            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)"
+                                stroke-width="2">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                            </svg>
+                        </div>
+                        <p style="font-size: 14px; letter-spacing: 1px; font-weight: bold;">WAITING FOR AI...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function openParticipants() {
+            const modal = document.getElementById('participants-modal');
+            modal.style.opacity = '1';
+            modal.style.pointerEvents = 'auto';
+        }
+
+        function closeParticipants() {
+            const modal = document.getElementById('participants-modal');
+            modal.style.opacity = '0';
+            modal.style.pointerEvents = 'none';
+        }
+
+        function slide(index) {
+            document.getElementById('mainSlider').style.transform = `translateX(-${index * 100}vw)`;
+        }
+
+        (() => {
+            const btnB = document.getElementById("btnB");
+            const status = document.getElementById("status");
+            const notifBox = document.getElementById("notification-box");
+            const notifOverlay = document.getElementById("notif-overlay");
+
+            let lastKnownCycle = localStorage.getItem("seq_cycle") || "0";
+
+            function showNotification() {
+                notifBox.classList.add("show");
+                notifOverlay.classList.add("active");
+                // Auto hide after 4 seconds
+                setTimeout(hideNotification, 4000);
+            }
+
+            function hideNotification() {
+                notifBox.classList.remove("show");
+                notifOverlay.classList.remove("active");
+            }
+
+            // Dismiss handlers
+            notifOverlay.addEventListener("click", hideNotification);
+            notifBox.addEventListener("click", hideNotification);
+
+            btnB.addEventListener("click", () => {
+                const sessionData = sessionStorage.getItem("sessionUser");
+                const user = sessionData ? JSON.parse(sessionData) : { name: "Unknown Student" };
+                const studentName = user.name || "Unknown Student";
+                const currentCycle = localStorage.getItem("seq_cycle") || "1";
+                
+                // Send student info to Lecturer's storage listener to log the press
+                const payload = { timestamp: Date.now(), name: studentName, cycle: currentCycle };
+                localStorage.setItem("seq_press_event", JSON.stringify(payload));
+                
+                // Lock this specific student for the current cycle
+                localStorage.setItem("seq_pressed_in_cycle_" + currentCycle + "_" + studentName, "true");
+
+                setEnabled(false);
+                status.textContent = "Response Sent!";
+            });
+
+            function setEnabled(bool) {
+                btnB.disabled = !bool;
+                if (bool) {
+                    status.textContent = "ACTIVE - PRESS NOW";
+                    document.getElementById("status-badge").textContent = "RESPOND WINDOW OPEN";
+                    status.style.color = "var(--accent-blue)";
+                } else {
+                    document.getElementById("status-badge").textContent = "Waiting...";
+                    status.style.color = "rgba(255,255,255,0.3)";
+                }
+            }
+
+            // Listen for changes from the Lecturer's tab
+            window.addEventListener('storage', (e) => {
+                // Check for new cycle to trigger popup
+                if (e.key === 'seq_cycle') {
+                    const currentCycle = e.newValue;
+                    if (currentCycle !== lastKnownCycle) {
+                        showNotification();
+                        slide(0); // Automatically slide back to the button page
+                        lastKnownCycle = currentCycle;
+                    }
+                }
+            });
+
+            function render() {
+                const state = localStorage.getItem("seq_state");
+                const sessionData = sessionStorage.getItem("sessionUser");
+                const user = sessionData ? JSON.parse(sessionData) : { name: "Unknown Student" };
+                const studentName = user.name || "Unknown Student";
+                const currentCycle = localStorage.getItem("seq_cycle") || "1";
+                const pressed = localStorage.getItem("seq_pressed_in_cycle_" + currentCycle + "_" + studentName) === "true";
+
+                // Logic: Unlock button only if sequence is "on" and user hasn't pressed yet
+                if (state === "on" && !pressed) {
+                    setEnabled(true);
+                } else {
+                    setEnabled(false);
+                    if (pressed) status.textContent = "Response Recorded ✓";
+                    else if (state === "off") status.textContent = "Waiting for next cycle...";
+                    else if (state === "done") status.textContent = "Session Finished";
+                }
+            }
+
+            // Fast polling for snappy UI updates
+            setInterval(render, 100);
+        })();
+    </script>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-analytics.js";
+        import { getFirestore, collection, addDoc, serverTimestamp, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCu4ZFec3lEByyL1sAvP0VLR-ghUh5osfM",
+            authDomain: "puft-database-33f12.firebaseapp.com",
+            projectId: "puft-database-33f12",
+            storageBucket: "puft-database-33f12.firebasestorage.app",
+            messagingSenderId: "1018103500164",
+            appId: "1:1018103500164:web:173938f4af0e0c0ab961d1",
+            measurementId: "G-P4BMY8N714"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getFirestore(app);
+
+        console.log("Firebase app initialized:", app);
+        console.log("Firestore initialized:", db);
+
+        // Listen to joined students in real-time
+        const sessionId = localStorage.getItem("activeSessionId");
+        let lastKnownHarlowQuestion = null;
+        if (sessionId) {
+            onSnapshot(doc(db, "puft database", "session data", "sessions", sessionId), (docSnapshot) => {
+                if (docSnapshot.exists()) {
+                    const data = docSnapshot.data();
+                    
+                    // --- Handle Harlow Live Questions from Database ---
+                    if (data.harlow_live_question) {
+                        if (data.harlow_live_question !== lastKnownHarlowQuestion) {
+                            lastKnownHarlowQuestion = data.harlow_live_question;
+                            
+                            const parts = data.harlow_live_question.split("|||");
+                            const content = parts.slice(1).join("|||"); // the text
+                            
+                            const chatFeed = document.getElementById("chatFeed");
+                            const placeholder = document.getElementById("chatPlaceholder");
+                            if (placeholder) placeholder.style.display = "none";
+                            
+                            const msgDiv = document.createElement("div");
+                            msgDiv.style.cssText = "background: rgba(77, 163, 255, 0.1); border-left: 4px solid #4da3ff; padding: 15px; margin-bottom: 15px; border-radius: 0 10px 10px 0; color: white; font-size: 14px; line-height: 1.5;";
+                            msgDiv.innerHTML = `<strong style="color: #4da3ff; font-family: 'Baloo Bhai 2'; font-size: 16px;">HARLOW:</strong><br><br>${content}`;
+                            
+                            chatFeed.appendChild(msgDiv);
+                            chatFeed.scrollTop = chatFeed.scrollHeight;
+                            
+                            // Slide to the live questions page
+                            slide(1);
+                        }
+                    }
+
+                    const allParticipants = data.joined_students || [];
+                    const students = allParticipants;
+
+                    const listEl = document.getElementById("participantsList");
+                    if (students.length === 0) {
+                        listEl.innerHTML = "No participants yet.";
+                    } else {
+                        listEl.innerHTML = students.map((s, i) => {
+                            const name = typeof s === 'string' ? s : (s.name || "Unknown");
+                            const batch = typeof s === 'object' && s.batch_major ? s.batch_major : "N/A";
+                            const studentId = typeof s === 'object' && s.student_id ? s.student_id : "N/A";
+                            const roleBadge = typeof s === 'object' && s.role === 'Lecturer' ? '<span style="background:var(--accent-blue);color:black;padding:2px 6px;border-radius:4px;font-size:10px;margin-left:8px;font-weight:bold;">LECTURER</span>' : '';
+
+                            let subDetails = [`ID: ${studentId}`, `Desc: ${batch}`];
+                            const subDetailsStr = subDetails.join(" • ");
+
+                            return `<div style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column;">
+                                <div>${i + 1}. <strong style="color: var(--accent-blue)">${name}</strong>${roleBadge}</div>
+                                <div style="font-size: 11px; color: rgba(255,255,255,0.6); margin-left: 14px; margin-top: 2px;">${subDetailsStr}</div>
+                            </div>`;
+                        }).join('');
+                    }
+                } else {
+                    // The session document was deleted by the lecturer
+                    localStorage.setItem("sessionEndedByLecturer", "true");
+                    localStorage.removeItem("activeSessionId");
+                    localStorage.removeItem("activeSessionCode");
+                    localStorage.removeItem("activeSessionName");
+                    // Route each user to their own lobby based on role
+                    const sessionData = sessionStorage.getItem("sessionUser");
+                    if (sessionData) {
+                        try {
+                            const user = JSON.parse(sessionData);
+                            if (user && user.role && user.role.toLowerCase() === "lecturer") {
+                                window.location.href = "lobby lect.html";
+                                return;
+                            }
+                        } catch(err) { /* fall through */ }
+                    }
+                    window.location.href = "lobby.html";
+                }
+            });
+        }
+
+
+    </script>
+
 </body>
+
 </html>

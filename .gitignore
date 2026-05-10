@@ -1,0 +1,5 @@
+node_modules/
+.env
+*.pptx
+*.docx
+firebase-key.json.json

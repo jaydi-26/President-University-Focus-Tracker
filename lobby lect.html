@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PUFT Lobby - Student</title>
-    <!-- Early role guard: redirect Lecturers before page renders -->
+    <title>PUFT Lobby - Lecturer</title>
+    <!-- Early role guard: redirect Students before page renders -->
     <script>
         (function () {
             var sessionData = sessionStorage.getItem("sessionUser");
@@ -14,8 +14,8 @@
             } else {
                 try {
                     var user = JSON.parse(sessionData);
-                    if (user && user.role && user.role.toLowerCase() === "lecturer") {
-                        window.location.replace("lobby lect.html");
+                    if (user && user.role && user.role.toLowerCase() === "student") {
+                        window.location.replace("lobby.html");
                     }
                 } catch (e) { }
             }
@@ -45,7 +45,7 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: radial-gradient(circle at top, #1e2a38 0%, #0a0e14 100%);
+            background: radial-gradient(circle at top, #4a0e0e 0%, #1a0505 100%);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -105,7 +105,7 @@
         .avatar-small {
             width: 35px;
             height: 35px;
-            background: var(--accent-blue);
+            background: var(--danger-red);
             border-radius: 50%;
             border: 2px solid white;
             transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
@@ -213,6 +213,7 @@
             background: #e3f2fd;
             border-color: var(--join-blue);
             box-shadow: 0 25px 50px rgba(52, 152, 219, 0.3);
+            border-radius: 50px;
         }
 
         #joinClassCard:hover .icon-box {
@@ -297,18 +298,19 @@
         }
 
         .modal-content {
-            background: rgba(10, 20, 40, 0.95);
+            background: rgba(26, 11, 11, 0.95);
             width: 95%;
             max-width: 500px;
             padding: 40px 30px;
             border-radius: 40px;
             position: relative;
-            box-shadow: 30px 30px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(52,152,219,0.3);
-            border: 2px solid rgba(52, 152, 219, 0.4);
+            box-shadow: 30px 30px 60px rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--danger-red);
             transform: translateY(30px);
             transition: transform 0.4s ease;
             max-height: 90vh;
             overflow-y: auto;
+            scrollbar-width: thin;
         }
 
         .modal-overlay.active .modal-content {
@@ -335,14 +337,21 @@
         }
 
         .sub-option:hover {
-            border-color: var(--join-blue);
+            border-color: var(--danger-red);
+        }
+
+        .sub-option.selected {
+            border-color: #ff4d4d;
+            background: rgba(169, 55, 55, 0.2);
+            box-shadow: 0 10px 20px rgba(169, 55, 55, 0.2);
+            transform: scale(1.02);
         }
 
         .trial-badge {
             position: absolute;
             top: 15px;
             right: 15px;
-            background: var(--join-blue);
+            background: #ff4d4d;
             color: white;
             font-size: 10px;
             padding: 4px 10px;
@@ -361,7 +370,6 @@
         .sub-option h3 {
             color: white;
             font-size: 1.1rem;
-            font-family: 'Poppins', sans-serif;
         }
 
         .sub-option p {
@@ -371,17 +379,9 @@
 
         .sub-option .price {
             font-weight: 700;
-            color: var(--join-blue);
+            color: #ff4d4d;
             display: block;
             margin-top: 5px;
-        }
-
-        /* selected plan highlight */
-        .sub-option.selected {
-            border-color: var(--join-blue);
-            background: rgba(52, 152, 219, 0.2);
-            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.2);
-            transform: scale(1.02);
         }
 
         /* --- PAYMENT FORM --- */
@@ -392,11 +392,11 @@
             margin-top: 15px;
             padding-top: 15px;
             border-top: 1px dashed rgba(255, 255, 255, 0.2);
-            animation: reveal 0.3s ease;
+            animation: slideDown 0.3s ease-out;
         }
 
-        @keyframes reveal {
-            from { opacity: 0; transform: translateY(-5px); }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
             to   { opacity: 1; transform: translateY(0); }
         }
 
@@ -443,10 +443,10 @@
         }
 
         .pay-now-btn {
-            background: linear-gradient(135deg, #1d4ed8, #3498db);
+            background: linear-gradient(180deg, #A93737, #661a1a);
             color: white;
             border: none;
-            border-bottom: 4px solid #1a3a8f;
+            border-bottom: 4px solid #4d0000;
             padding: 12px;
             border-radius: 12px;
             font-weight: 600;
@@ -456,61 +456,14 @@
             font-family: 'Poppins', sans-serif;
             font-size: 16px;
             width: 100%;
-            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+            box-shadow: 0 4px 15px rgba(169, 55, 55, 0.4);
         }
         .pay-now-btn:hover { filter: brightness(1.1); transform: translateY(-2px); }
         .pay-now-btn:active { transform: translateY(2px); border-bottom-width: 1px; }
-        .pay-now-btn:disabled { opacity: 0.55; cursor: not-allowed; }
-
-        /* ── TOAST (lobby) ───────────────────────────────────────────── */
-        #lobby-toast-container {
-            position: fixed;
-            top: 24px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 99999;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            pointer-events: none;
-            width: max-content;
-            max-width: calc(100vw - 32px);
-        }
-        .lobby-toast {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 14px 18px;
-            border-radius: 14px;
-            border: 1px solid transparent;
-            backdrop-filter: blur(24px);
-            box-shadow: 0 16px 40px rgba(0,0,0,0.4);
-            min-width: 300px;
-            max-width: 420px;
-            pointer-events: all;
-            animation: lToastIn 0.45s cubic-bezier(0.16,1,0.3,1) both;
-            font-family: 'Poppins', sans-serif;
-        }
-        .lobby-toast.hiding { animation: lToastOut 0.35s ease forwards; }
-        @keyframes lToastIn {
-            from { opacity:0; transform:translateY(-20px) scale(0.92); }
-            to   { opacity:1; transform:translateY(0)   scale(1);    }
-        }
-        @keyframes lToastOut {
-            from { opacity:1; transform:translateY(0) scale(1); max-height:200px; }
-            to   { opacity:0; transform:translateY(-12px) scale(0.94); max-height:0; padding:0; margin:0; }
-        }
-        .lobby-toast-error  { background:rgba(22, 24, 32, 0.96); border-color:rgba(255,255,255,0.1); color:rgba(255,255,255,0.88); }
-        .lobby-toast-success{ background:rgba(22, 24, 32, 0.96); border-color:rgba(39,174,96,0.4);  color:rgba(255,255,255,0.88); }
-        .lobby-toast-body { flex:1; font-size:13px; line-height:1.4; }
-        .lobby-toast-title { font-weight:700; margin-bottom:2px; }
-        .lobby-toast-msg   { opacity:0.8; font-size:12px; }
-        .lobby-toast-close { background:none; border:none; color:inherit; opacity:0.5; cursor:pointer; font-size:18px; line-height:1; padding:0; flex-shrink:0; transition:opacity .2s; }
-        .lobby-toast-close:hover { opacity:1; }
 
         /* --- PROFILE MODAL SPECIFIC STYLES (GLASSMORPHISM) --- */
         .profile-modal {
-            background: rgba(18, 28, 45, 0.75) !important;
+            background: rgba(35, 10, 10, 0.75) !important;
             backdrop-filter: blur(30px) saturate(150%);
             -webkit-backdrop-filter: blur(30px) saturate(150%);
             border: 1px solid rgba(255, 255, 255, 0.08) !important;
@@ -529,10 +482,10 @@
         .profile-avatar-large {
             width: 120px;
             height: 120px;
-            background: linear-gradient(135deg, #3498db, #2980b9);
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
             border-radius: 50%;
             margin: 0 auto 25px;
-            box-shadow: 0 15px 35px rgba(52, 152, 219, 0.3), inset 0 0 0 4px rgba(255, 255, 255, 0.1);
+            box-shadow: 0 15px 35px rgba(231, 76, 60, 0.3), inset 0 0 0 4px rgba(255, 255, 255, 0.1);
             border: none;
             position: relative;
         }
@@ -542,7 +495,7 @@
             position: absolute;
             inset: -6px;
             border-radius: 50%;
-            border: 2px dashed rgba(52, 152, 219, 0.4);
+            border: 2px dashed rgba(231, 76, 60, 0.4);
             animation: spin 20s linear infinite;
         }
 
@@ -561,15 +514,15 @@
 
         .role-badge {
             display: inline-block;
-            background: rgba(52, 152, 219, 0.15);
-            color: #85c1e9 !important;
+            background: rgba(231, 76, 60, 0.15);
+            color: #ff8e8e !important;
             padding: 8px 20px;
             border-radius: 50px;
             font-size: 0.8rem;
             font-weight: 700;
             letter-spacing: 2px;
             margin-top: 10px;
-            border: 1px solid rgba(52, 152, 219, 0.3);
+            border: 1px solid rgba(231, 76, 60, 0.3);
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
@@ -643,6 +596,77 @@
             color: #888;
             transition: all 0.3s ease;
         }
+
+        /* --- SCROLLBAR FIXES --- */
+
+        /* Custom Scrollbar for Modal Content (Webkit) */
+        .modal-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modal-content::-webkit-scrollbar-track {
+            background: transparent;
+            margin: 25px 0;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.12);
+            border-radius: 10px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.25);
+        }
+
+        /* Prevents background page from scrolling when modal is open */
+        body.modal-open {
+            overflow: hidden;
+        }
+
+        /* ── TOAST NOTIFICATION ─────────────────────────────── */
+        #lect-toast-container {
+            position: fixed;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+            width: max-content;
+            max-width: calc(100vw - 32px);
+        }
+        .lect-toast {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 18px;
+            border-radius: 14px;
+            border: 1px solid transparent;
+            backdrop-filter: blur(24px);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+            min-width: 300px;
+            max-width: 420px;
+            pointer-events: all;
+            animation: lToastIn 0.45s cubic-bezier(0.16,1,0.3,1) both;
+            font-family: 'Poppins', sans-serif;
+        }
+        .lect-toast.hiding { animation: lToastOut 0.35s ease forwards; }
+        @keyframes lToastIn {
+            from { opacity:0; transform:translateY(-20px) scale(0.92); }
+            to   { opacity:1; transform:translateY(0)   scale(1);    }
+        }
+        @keyframes lToastOut {
+            from { opacity:1; transform:translateY(0) scale(1); max-height:200px; }
+            to   { opacity:0; transform:translateY(-12px) scale(0.94); max-height:0; padding:0; margin:0; }
+        }
+        .lect-toast-error  { background:rgba(22, 24, 32, 0.96); border-color:rgba(255,255,255,0.1); color:rgba(255,255,255,0.88); }
+        .lect-toast-body { flex:1; font-size:13px; line-height:1.4; }
+        .lect-toast-title { font-weight:700; margin-bottom:2px; }
+        .lect-toast-msg   { opacity:0.8; font-size:12px; }
+        .lect-toast-close { background:none; border:none; color:inherit; opacity:0.5; cursor:pointer; font-size:18px; line-height:1; padding:0; flex-shrink:0; transition:opacity .2s; }
+        .lect-toast-close:hover { opacity:1; }
 
         /* ─── MOBILE RESPONSIVE ─────────────────────────────────────────── */
         @media (max-width: 768px) {
@@ -786,7 +810,7 @@
                 font-size: 20px;
             }
 
-            /* Hide username text on very small screens to save space */
+            /* Hide username text on very small screens */
             .user-profile span {
                 display: none;
             }
@@ -817,23 +841,25 @@
 
 <body>
 
+    <div id="lect-toast-container"></div>
+
     <div id="profileModal" class="modal-overlay">
         <div class="modal-content profile-modal">
             <button class="close-btn" id="closeProfile">&times;</button>
             <div class="profile-avatar-large"></div>
             <h2 id="modalProfileName" style="text-align: center;">Name</h2>
             <div style="text-align: center;">
-                <p class="role-badge">STUDENT</p>
+                <p class="role-badge">LECTURER</p>
             </div>
 
             <div class="detail-card">
                 <div class="detail-item">
-                    <label>Student ID</label>
-                    <p id="profileStudentID">012202500067</p>
+                    <label>Employee ID</label>
+                    <p id="profileEmployeeID">202402500067</p>
                 </div>
                 <div class="detail-item">
-                    <label>Batch / Major</label>
-                    <p id="profileBatchMajor">2025 — Information System</p>
+                    <label>Department</label>
+                    <p id="profileDepartment">Information System</p>
                 </div>
                 <div class="detail-item">
                     <label>Faculty</label>
@@ -845,12 +871,10 @@
         </div>
     </div>
 
-    <div id="lobby-toast-container"></div>
-
     <div id="subModal" class="modal-overlay">
         <div class="modal-content">
             <button class="close-btn" id="closeSub">&times;</button>
-            <h2 style="color: #60a5fa; text-align: center; font-family: 'Poppins'; font-size: 28px; font-weight: 700;">Choose Plan</h2>
+            <h2 style="color: #ff4d4d; text-align: center; font-family: 'Poppins'; font-size: 28px; font-weight: 700;">Choose Plan</h2>
             <p style="color: rgba(255,255,255,0.6); text-align: center; margin-top: 5px;">Unlock HARLOW right now!</p>
 
             <div class="sub-grid">
@@ -871,7 +895,7 @@
                             <label>Full Name</label>
                             <input type="text" placeholder="Full Name">
                         </div>
-                        <button class="pay-now-btn" id="monthlyPayBtn" onclick="startPremiumTrial('monthly')">Start Free Trial</button>
+                        <button class="pay-now-btn" onclick="startPremiumTrial(this)">Start Free Trial</button>
                     </div>
                 </div>
 
@@ -886,7 +910,7 @@
                             <label>Full Name</label>
                             <input type="text" placeholder="Full Name">
                         </div>
-                        <button class="pay-now-btn" id="yearlyPayBtn" onclick="startPremiumTrial('yearly')">Start Free Trial</button>
+                        <button class="pay-now-btn" onclick="startPremiumTrial(this)">Start Free Trial</button>
                     </div>
                 </div>
             </div>
@@ -896,14 +920,14 @@
     <nav class="navbar">
         <div class="logo">PUFT</div>
         <div class="user-profile" id="profileTrigger">
-            <span id="navUsername">User</span>
+            <span id="navUsername">Gya</span>
             <div class="avatar-small"></div>
         </div>
     </nav>
 
     <main class="main-container">
         <div class="welcome-text">
-            <h1 id="welcomeTitle">Welcome</h1>
+            <h1 id="welcomeTitle">Welcome, Gya</h1>
         </div>
 
         <div class="actions-grid">
@@ -954,47 +978,52 @@
             }
         };
 
-        // ── Lobby toast helper ────────────────────────────────────────
-        function showLobbyToast(type, title, msg, dur = 5000) {
-            const c = document.getElementById('lobby-toast-container');
-            const icons = {
-                error:   '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
-                success: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>'
-            };
+        // Premium Trial (Moved to module block for database access)
+
+        // Toast helper for payment notifications
+        function showLectToast(msg, dur = 5000) {
+            const c = document.getElementById('lect-toast-container');
             const t = document.createElement('div');
-            t.className = `lobby-toast lobby-toast-${type}`;
-            t.innerHTML = `${icons[type]||icons.error}<div class="lobby-toast-body"><div class="lobby-toast-title">${title}</div>${msg?`<div class="lobby-toast-msg">${msg}</div>`:''}</div><button class="lobby-toast-close">&times;</button>`;
+            t.className = 'lect-toast lect-toast-error';
+            t.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><div class="lect-toast-body"><div class="lect-toast-msg">${msg}</div></div><button class="lect-toast-close">&times;</button>`;
             const dismiss = () => { t.classList.add('hiding'); t.addEventListener('animationend', () => t.remove(), {once:true}); };
-            t.querySelector('.lobby-toast-close').addEventListener('click', dismiss);
+            t.querySelector('.lect-toast-close').addEventListener('click', dismiss);
             c.appendChild(t);
             setTimeout(dismiss, dur);
         }
 
-        // Premium Trial (Moved to module block for database access)
-
+        // Open/Close Modal Functions
         const openModal = (m) => {
             m.style.display = 'flex';
+            document.body.classList.add('modal-open'); // Lock background scroll
             setTimeout(() => m.classList.add('active'), 10);
         };
+
         const closeModal = (m) => {
             m.classList.remove('active');
+            document.body.classList.remove('modal-open'); // Unlock background scroll
             setTimeout(() => m.style.display = 'none', 400);
         };
 
+        // Event Listeners
         pTrigger.addEventListener('click', () => openModal(pModal));
         sTrigger.addEventListener('click', () => openModal(sModal));
         pClose.addEventListener('click', () => closeModal(pModal));
         sClose.addEventListener('click', () => closeModal(sModal));
 
+        // Close when clicking outside
         window.addEventListener('click', (e) => {
             if (e.target === pModal) closeModal(pModal);
             if (e.target === sModal) closeModal(sModal);
         });
-
     </script>
     <script type="module">
+        // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-analytics.js";
+        import { getFirestore, collection, addDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js"; 
 
+        // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCu4ZFec3lEByyL1sAvP0VLR-ghUh5osfM",
             authDomain: "puft-database-33f12.firebaseapp.com",
@@ -1005,19 +1034,26 @@
             measurementId: "G-P4BMY8N714"
         };
 
-        initializeApp(firebaseConfig);
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getFirestore(app); 
 
         // Premium Registration Engine — Midtrans Snap
-        window.startPremiumTrial = async (plan) => {
-            const prefix = plan === 'yearly' ? 'yearly' : 'monthly';
-            const option = document.getElementById(prefix + 'Option');
+        window.startPremiumTrial = async (callerBtn) => {
+            // ── Find the active (selected) plan's form ───────────────────
+            const option = callerBtn ? callerBtn.closest('.sub-option') : null;
+            const plan = option && option.id === 'yearlyOption' ? 'yearly' : 'monthly';
 
-            const inputs  = option.querySelectorAll('.payment-form input');
-            const nameVal = inputs[0] ? inputs[0].value.trim() : '';
+            let nameVal = '';
+            if (option) {
+                const inputs  = option.querySelectorAll('.payment-form input');
+                nameVal = inputs[0] ? inputs[0].value.trim() : '';
+            }
 
-            // ── Validation ──────────────────────────────────────────────
+            // ── Validation ─────────────────────────────────────────────
             if (!nameVal) {
-                showLobbyToast('error', 'Required Fields', 'Please fill in your Full Name before continuing.');
+                showLectToast('Please fill in your Full Name before continuing.');
                 return;
             }
 
@@ -1025,9 +1061,11 @@
             const sessionRaw = sessionStorage.getItem("sessionUser");
             const user = sessionRaw ? JSON.parse(sessionRaw) : {};
 
-            const btn = document.getElementById(prefix + 'PayBtn');
-            btn.disabled = true;
-            btn.textContent = 'Loading…';
+            const btn = option ? option.querySelector('.pay-now-btn') : null;
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = 'Loading…';
+            }
 
             try {
                 // ── Try to start a free trial first ─────────────────────────
@@ -1045,7 +1083,7 @@
                     sessionStorage.setItem("sessionUser", JSON.stringify(user));
                     localStorage.setItem('puft_premium', 'true');
                     const trialEndDate = new Date(trialData.trial_end).toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
-                    showLobbyToast('success', '🎉 Trial Started!', `You have 14 days of free premium access until ${trialEndDate}.`);
+                    showLectToast(`🎉 Trial Started! You have 14 days of free premium access until ${trialEndDate}.`, 4000);
                     setTimeout(() => { window.location.href = 'create.html'; }, 2500);
                     return;
                 }
@@ -1070,14 +1108,15 @@
                 const data = await response.json();
                 if (!response.ok || !data.token) throw new Error(data.error || 'No token received.');
 
-                btn.textContent = 'Subscribe Now';
-                btn.disabled = false;
+                if (btn) {
+                    btn.textContent = 'Subscribe Now';
+                    btn.disabled = false;
+                }
 
                 // ── Open the Midtrans Snap payment popup ─────────────────
                 window.snap.pay(data.token, {
                     onSuccess: async (result) => {
                         console.log('Payment success:', result);
-                        // ── Write is_premium to Firestore only on real payment success ──
                         try {
                             const { initializeApp } = await import("https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js");
                             const { getFirestore, doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js");
@@ -1104,29 +1143,31 @@
                         user.is_premium = true;
                         sessionStorage.setItem("sessionUser", JSON.stringify(user));
                         localStorage.setItem('puft_premium', 'true');
-                        showLobbyToast('success', 'Premium Activated! 🎉', 'Redirecting to your session…');
+                        showLectToast('Premium Activated! 🎉 Redirecting...', 3000);
                         setTimeout(() => { window.location.href = 'create.html'; }, 2000);
                     },
                     onPending: (result) => {
-                        console.log('Payment pending:', result);
-                        showLobbyToast('error', 'Payment Pending', 'Complete your payment to activate premium.');
+                        showLectToast('Payment Pending - Complete your payment to activate premium.');
                     },
                     onError: (result) => {
-                        console.error('Payment error:', result);
-                        showLobbyToast('error', 'Payment Failed', 'Please Try Again.');
+                        showLectToast('Payment Failed - Please Try Again.');
                     },
                     onClose: () => {
-                        showLobbyToast('error', 'Cancelled', 'Payment window was closed.');
+                        showLectToast('Payment Cancelled');
                     }
                 });
 
             } catch (err) {
                 console.error('Transaction error:', err);
-                showLobbyToast('error', 'Connection Error', 'Could not reach the payment server. Is the server running?');
-                btn.textContent = 'Start Free Trial';
-                btn.disabled = false;
+                showLectToast('Connection Error. Could not reach the payment server.');
+                if (btn) {
+                    btn.textContent = 'Start Free Trial';
+                    btn.disabled = false;
+                }
             }
         };
+        console.log("Firebase app initialized:", app);
+        console.log("Firestore initialized:", db);
 
         // Verify Session and Load Personal Data
         function initProfile() {
@@ -1138,8 +1179,8 @@
             const user = JSON.parse(sessionData);
 
             // Route enforcement
-            if (user.role === "Lecturer") {
-                window.location.href = "lobby lect.html";
+            if (user.role === "Student") {
+                window.location.href = "lobby.html";
                 return;
             }
 
@@ -1149,67 +1190,11 @@
             document.getElementById("navUsername").innerText = userName.split(" ")[0];
             document.getElementById("modalProfileName").innerText = userName;
 
-            document.getElementById("profileStudentID").innerText = user.student_id || "Not Set";
-            
-            let displayBatchMajor = user.batch_major;
-            if (!displayBatchMajor && user.batch && user.major) {
-                displayBatchMajor = `${user.batch} — ${user.major}`;
-            }
-            document.getElementById("profileBatchMajor").innerText = displayBatchMajor || "Not Set";
-            
+            document.getElementById("profileEmployeeID").innerText = user.employee_id || "Not Set";
+            document.getElementById("profileDepartment").innerText = user.department || "Not Set";
             document.getElementById("profileFaculty").innerText = user.faculty || "Not Set";
         }
         initProfile();
-
-        // Handle kickout notification
-        window.addEventListener('DOMContentLoaded', () => {
-            if (localStorage.getItem("sessionEndedByLecturer") === "true") {
-                localStorage.removeItem("sessionEndedByLecturer");
-
-                // Create dynamic toast notification
-                const notif = document.createElement("div");
-                notif.style.cssText = `
-                  position: fixed;
-                  bottom: 30px;
-                  right: -400px;
-                  background: rgba(23, 31, 36, 0.95);
-                  backdrop-filter: blur(20px);
-                  border-left: 5px solid #e74c3c;
-                  color: white;
-                  padding: 20px 25px;
-                  border-radius: 8px;
-                  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-                  font-family: 'Poppins', sans-serif;
-                  z-index: 9999;
-                  transition: right 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                  display: flex;
-                  align-items: center;
-                  gap: 15px;
-              `;
-
-                notif.innerHTML = `
-                  <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <line x1="12" y1="8" x2="12" y2="12"></line>
-                      <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                  </svg>
-                  <div>
-                      <h4 style="margin: 0 0 5px 0; font-family: 'Baloo Bhai 2'; font-size: 20px; color: #e74c3c;">Session Ended</h4>
-                      <p style="margin: 0; font-size: 14px; opacity: 0.9;">The lecturer has closed the connection.</p>
-                  </div>
-              `;
-
-                document.body.appendChild(notif);
-
-                // Animate in
-                setTimeout(() => { notif.style.right = "30px"; }, 500);
-                // Animate out and remove
-                setTimeout(() => {
-                    notif.style.right = "-400px";
-                    setTimeout(() => notif.remove(), 500);
-                }, 6000);
-            }
-        });
     </script>
 </body>
 
